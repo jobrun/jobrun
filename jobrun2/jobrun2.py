@@ -10,17 +10,18 @@ app = Flask(__name__)
 
 pool = ConnectionPool('jobrun', server_list=['tamp20-seot-cas1.bhn.net:9160',
                                              'tamp20-seot-cas2.bhn.net:9160',
-                                             'tamp20-seot-cas3.bhn.net:9160',]
-jl = ColumnFamily(pool, 'jobrun_lookup')
-jr = ColumnFamily(pool, 'jobrun_results')
+                                             'tamp20-seot-cas3.bhn.net:9160',])
+jl = ColumnFamily(pool, 'job_lookup')
+jr = ColumnFamily(pool, 'job_results')
 
-@app.route('/jobrun2/record_job', method='POST')
+@app.route('/jobrun2/record_job', methods=['POST'])
 def record_job():
     jobresults = {}
-    started = datetime.strptime(request.form['started'], '%m/%d/%Y %H:%M:%S.%f')
+    print request.form
+    started = datetime.datetime.strptime(request.form['started'], '%m/%d/%Y %H:%M:%S.%f')
     jobresults['dataset'] = request.form['dataset']
     jobresults['action'] = request.form['action']
-    jobresults['status'] = request.form['status']
+    jobresults['status'] = int(request.form['status'])
     jobresults['output'] = request.form['output']
     if request.form['command']:
         jobresults['command'] = request.form['command']
@@ -32,10 +33,11 @@ def record_job():
         jobresults['machine'] = request.form['machine']
 
     jobid = uuid4()
-    year = int(started, '%Y')
-    rk = (dataset, action, year)
+    year = int(datetime.datetime.strftime(started, '%Y'))
+    rk = (jobresults['dataset'], jobresults['action'], year)
     jl.insert(rk, {started: jobid})
     jr.insert(jobid, jobresults)
+    return('OK')
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
