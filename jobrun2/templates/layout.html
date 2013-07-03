@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Jobrun Status</title>
+    <meta name="viewport" content="windt=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" media="screen" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+
+      @media (max-width: 480px) {
+        .navbar-text.pull-right {
+          float: none;
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+      }
+    </style>
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="/">Zenoss Dashboard</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right" >
+              Logged in as <a href="#" class="navbar-link">Username</a>
+            </p>
+            <ul class="nav">
+              <li><a href="/">Home</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      {% block body %}{% endblock %}
+    </div>
+  </body>
+
+</html>
