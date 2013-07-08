@@ -39,5 +39,38 @@ def record_job():
     jr.insert(jobid, jobresults)
     return('OK')
 
+@app.route('/jobrun2')
+def show_jobs():
+    j = {}
+    jobs = jl.get_range(column_count=0)
+    for job in jobs:
+        rk = job[0]
+        last = getLast(rk)
+        success7 = getSuccess(rk, 7)
+        success14 = getSuccess(rk, 14)
+        success30 = getThirtyDaySuccess(rk, 30)
+        j[rk] = {'last': last, 'success7': success7, 'success14': success14, 'success30': success30}
+
+def getLast(rk):
+    jlookup = jl.get(column_reversed=True, column_count=1)
+    status = jr.get(jlookup.values()[0], column_start='status', column_finish='status')['status']
+    return status
+
+def getSuccess(rk, days):
+    start = datetime.datetime.now()
+    stop = start-datetime.timedelta(days)
+    statusSum = 0
+    jlookup = jl.get(column_start=start, column_finish=stop)
+    statuses = jr.multiget(jlookup.volues(), column_start='status', column_finish='status')
+    try:
+        numjobs = len(statuses)
+    except:
+        return 0.0
+    for status in statuses:
+        statusSum += status['status']
+    success = (float(statusSum) / float(numjobs)) * 100
+    return success
+
+
 if __name__ == "__main__":
     app.run(debug=True)
