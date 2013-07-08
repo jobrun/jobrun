@@ -19,6 +19,7 @@ print 'Connected to cassandra...'
 
 jl = ColumnFamily(pool, 'job_lookup')
 jr = ColumnFamily(pool, 'job_results')
+jf = ColumnFamily(pool, 'job_failures')
 
 if len(sys.argv) == 2:
     query = """SELECT STARTED, DATASET, ACTION, STATUS, OUTPUT, COMMAND, USERNAME, PROGRAM, MACHINE FROM JOBMON.JOBRUNLOG WHERE DATASET='%s'""" % sys.argv[1]
@@ -46,4 +47,6 @@ while not row == None:
     jobid = uuid4()
     jl.insert(rk, {started: jobid})
     jr.insert(jobid, jobresults)
+    if int(row[3]) != 0:
+        jf.insert(rk, {started: jobid})
     row = cur.fetchone()
