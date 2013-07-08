@@ -12,7 +12,7 @@ jr = ColumnFamily(pool, 'job_results')
 
 def getLast(rk):
     try:
-        jlookup = jl.get(rk, column_reversed=True, column_count=1)
+        jlookup = jl.get(rk, column_count=1)
     except:
         return None
     status = jr.get(jlookup.values()[0], column_start='status', column_finish='status')['status']
@@ -24,7 +24,7 @@ def getSuccess(rk, days):
     statusSum = 0.0
     numjobs = 0
     try:
-        jlookup = jl.get(rk, column_start=start, column_finish=stop, column_reversed=True)
+        jlookup = jl.get(rk, column_start=start, column_finish=stop)
     except:
         return None
     statuses = jr.multiget(jlookup.values(), column_start='status', column_finish='status')
