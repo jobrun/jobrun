@@ -1,0 +1,32 @@
+create column family job_lookup
+with key_validation_class = 'CompositeType(UTF8Type, UTF8Type, IntegerType)'
+and comparator = 'ReversedType(DateType)'
+and default_validation_class = UUIDType;
+
+create column family job_results
+with key_validation_class = UUIDType
+and comparator = UTF8Type
+and default_validation_class = UTF8Type
+and column_metadata=[
+{column_name: 'status', validation_class: IntegerType}
+{column_name: 'output', validation_class: UTF8Type}
+{column_name: 'command', validation_class: UTF8Type}
+{column_name: 'username', validation_class: UTF8Type}
+{column_name: 'program', validation_class: UTF8Type}
+{column_name: 'machine', validation_class: UTF8Type}
+];
+
+create column family job_dashboard
+with key_validation_class = 'CompositeType(UTF8Type, UTF8Type)'
+and comparator = UTF8Type
+and default_validation_class = FloatType;
+
+create column family job_sf
+with default_validation_class=CounterColumnType
+and comparator = DateType
+and replicate_on_write=true;
+
+create column family job_failures
+with key_validation_class = 'CompositeType(UTF8Type, UTF8Type, IntegerType)'
+and comparator = DateType
+and default_validation_class = UUIDType;
