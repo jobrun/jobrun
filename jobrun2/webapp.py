@@ -8,9 +8,9 @@ import datetime
 
 app = Flask(__name__)
 
-#from jobrun2 import JobRun2
+from jobrun2 import JobRun2
 
-#jr = JobRun2()
+jr = JobRun2()
 
 #@app.route('/jobrun2/record_job', methods=['POST'])
 #def record_job():
@@ -48,7 +48,13 @@ def show_jobs():
     #    success14 = getSuccess(rk, 14)
     #    success30 = getThirtyDaySuccess(rk, 30)
     #    j[rk] = {'last': last, 'success7': success7, 'success14': success14, 'success30': success30}
-
+    data = jr.getJobDashboardSuccessAll()
+    jobs = jr.getJobKeys()
+    todayYear = datetime.datetime.now().strftime('%Y')
+    for job in jobs:
+        if job[2] == todayYear:
+            data[(job[0], job[1])][0] = jr.getLast(job)
+            data[(job[0], job[1])][1] = jr.getToday(job)
     sample_data = {('Video', 'SDV Collection Indianapolis'): {0: 'Success', 1: 100.0, 30: 92.7, 60: 98.0, 90: 99.9},
                    ('Video', 'SDV Collection Detroit'): {0: 'Fail', 1: 0.0, 30: 72.7, 60: 58.0, 90: 29.9},
                    ('Video', 'SDV Collection Bakersfield'): {0: 'Success', 1: 100.0, 30: 92.7, 60: 98.0, 90: 99.9},
@@ -57,7 +63,7 @@ def show_jobs():
                    ('Video', 'SDV Collection Brandon'): {0: 'Success', 1: 100.0, 30: 92.7, 60: 98.0, 90: 99.9},
                    ('Video', 'SDV Collection Fortune'): {0: 'Success', 1: 100.0, 30: 92.7, 60: 98.0, 90: 99.9},
                   }
-    return render_template('dashboard.html', data=sample_data) 
+    return render_template('dashboard.html', data=data) 
 
 if __name__ == '__main__':
     app.run(debug=True)
