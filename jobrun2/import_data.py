@@ -20,6 +20,7 @@ print 'Connected to cassandra...'
 jl = ColumnFamily(pool, 'job_lookup')
 jr = ColumnFamily(pool, 'job_results')
 jf = ColumnFamily(pool, 'job_failures')
+jsf = ColumnFamily(pool, 'job_sf')
 
 if len(sys.argv) == 2:
     query = """SELECT STARTED, DATASET, ACTION, STATUS, OUTPUT, COMMAND, USERNAME, PROGRAM, MACHINE FROM JOBMON.JOBRUNLOG WHERE DATASET='%s'""" % sys.argv[1]
@@ -35,6 +36,7 @@ cur.execute(query)
 row = cur.fetchone()
 while not row == None:
     started = row[0]
+    started_date = datetime.strptime(started.strftime('%m/%d/%Y'), '%m/%d/%Y')
     year = int(started.strftime('%Y'))
     rk = (row[1], row[2], year)
     jobresults = {}
@@ -49,4 +51,7 @@ while not row == None:
     jr.insert(jobid, jobresults)
     if int(row[3]) != 0:
         jf.insert(rk, {started: jobid})
+        jsf.insert((row[1],row[2]), {('fail',started_date): 1}, timestamp=started, ttl=7776000)
+    else:
+        jsf.insert((row[1],row[2]), {('success',started_date): 1}, timestamp=started, ttl=7776000)
     row = cur.fetchone()
