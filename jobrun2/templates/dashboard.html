@@ -1,23 +1,25 @@
 {% extends "layout.html" %}
 {% block body %}
-<table>
-    <tr>
-      <td>Job</td>
-      <td>Last</td>
-      <td>Today</td>
-      <td>30 Days</td>
-      <td>60 Days</td>
-      <td>90 Days</td>
-    </tr>
-    {% for key in data.keys() %}
-    <tr>
-      <td>{{ key[0] }} {{ key[1] }}</td>
-      <td>{{ data[key][0] }}</td>
-      <td>{{ data[key][1] }}</td>
-      <td>{{ data[key][30] }}</td>
-      <td>{{ data[key][60] }}</td>
-      <td>{{ data[key][90] }}</td>
-    </tr>
-    {% endfor %}
-</table>
+
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span2">Job</div>
+    <div class="span2">Last</div>
+    <div class="span2">Today</div>
+    <div class="span2">30 Days</div>
+    <div class="span2">60 Days</div>
+    <div class="span2">90 Days</div>
+  </div>
+
+  {% for key in data.keys() %}
+  <div class="row-fluid">
+    <div class="span2">{{ key[0] }} {{ key[1] }}</div>
+    <div class="span2">{{ data[key][0] }}</div>
+    <div class="span2">{{ data[key][1] }}</div>
+    <div class="span2">{{ data[key][30] }}</div>
+    <div class="span2">{{ data[key][60] }}</div>
+    <div class="span2">{{ data[key][90] }}</div>
+  </div>
+  {% endfor %}
+</div>
 {% endblock %}
