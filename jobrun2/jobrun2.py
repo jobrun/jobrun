@@ -41,7 +41,12 @@ class JobRun2:
             self.rks.append(job[0])
 	return self.rks
 
-    def getJobDashboardSuccessAll(self,rks):
+    def getJobDashboardSuccessAll(self):
+	rks = self.getJobDashboardKeys()
+	successRates = self.jd.multiget(rks)
+	return successRates
+
+    def getJobDashboardSuccessMulti(self,rks):
 	successRates = self.jd.multiget(rks)
 	return successRates
 
