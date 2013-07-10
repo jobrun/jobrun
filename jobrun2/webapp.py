@@ -57,4 +57,7 @@ def show_jobs():
                    ('Video', 'SDV Collection Brandon'): {0: 'Success', 1: 100.0, 30: 92.7, 60: 98.0, 90: 99.9},
                    ('Video', 'SDV Collection Fortune'): {0: 'Success', 1: 100.0, 30: 92.7, 60: 98.0, 90: 99.9},
                   }
-   return render_template('dashboard.html', sample_data) 
+    return render_template('dashboard.html', data=sample_data) 
+
+if __name__ == '__main__':
+    app.run(debug=True)
