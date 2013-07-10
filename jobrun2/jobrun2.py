@@ -41,10 +41,20 @@ class JobRun2:
             self.rks.append(job[0])
 	return self.rks
 
+    def getJobDashboardSuccessAll(self,rks):
+	successRates = self.jd.multiget(rks)
+	return successRates
+
+    def getJobDashboardSuccess(self,rk):
+	successRate = self.jd.get(rk)
+	return successRate
+
+    def insertJobResults(self,dataset,action,jobDict):
+	year = date.today().year
+	rk = [dataset,action,str(year)]
+	self.jr.insert(rk,jobDict)
+
     def insertJobSuccess(self,rk,days,successRate):
 	self.jd.insert(rk,{str(days):float(successRate)})
 
-    def getJobDashboardSuccess(self,rk):
-	successRates = self.jd.get(rk)
-	return successRates
 
