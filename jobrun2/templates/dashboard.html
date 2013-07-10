@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block body %}
+<table>
+    <tr>
+      <td>Job</td>
+      <td>Last</td>
+      <td>Today</td>
+      <td>30 Days</td>
+      <td>60 Days</td>
+      <td>90 Days</td>
+    </tr>
+    {% for key in data.keys() %}
+    <tr>
+      <td>{{ key[0] }} {{ key[1] }}</td>
+      <td>{{ data[key][0] }}</td>
+      <td>{{ data[key][1] }}</td>
+      <td>{{ data[key][30] }}</td>
+      <td>{{ data[key][60] }}</td>
+      <td>{{ data[key][90] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
