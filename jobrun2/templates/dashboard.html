@@ -19,25 +19,42 @@
     {% else %}
     <div class="span2 ok">{{ data[key][0] }}</div>
     {% endif %}
-    {% if data[key][1] < 90 %}
-    <div class="span2 critical">{{ data[key][1] }}%</div>
-    {% else %}
-    <div class="span2 ok">{{ data[key][1] }}%</div>
+	
+     {% if not data[key][1] %}
+	<div class="span2 unknown">None</div>
+     {% else %}
+    	{%  if data[key][1] < 90 %}
+    	<div class="span2 critical">{{ data[key][1] }}%</div>
+    	{% else %}
+    	<div class="span2 ok">{{ data[key][1] }}%</div>
+    	{% endif %}
     {% endif %}
-    {% if data[key][30] < 90 %}
-    <div class="span2 critical">{{ data[key][30] }}%</div>
+    {% if not data[key][30] %}
+	<div class="span2 unknown">None</div>
     {% else %}
-    <div class="span2 ok">{{ data[key][30] }}%</div>
+    	{% if data[key][30] < 90 %}
+        <div class="span2 critical">{{ data[key][30] }}%</div>
+        {% else %}
+        <div class="span2 ok">{{ data[key][30] }}%</div>
+        {% endif %}
     {% endif %}
-    {% if data[key][60] < 90 %}
-    <div class="span2 critical">{{ data[key][60] }}%</div>
+    {% if not data[key][60] %}
+	<div class="span2 unknown">None</div>
     {% else %}
-    <div class="span2 ok">{{ data[key][60] }}%</div>
+        {% if data[key][60] < 90 %}
+        <div class="span2 critical">{{ data[key][60] }}%</div>
+        {% else %}
+        <div class="span2 ok">{{ data[key][60] }}%</div>
+        {% endif %}
     {% endif %}
-    {% if data[key][90] < 90 %}
-    <div class="span2 critical">{{ data[key][90] }}%</div>
+    {% if not data[key][90] %}
+	<div class="span2 unknown">None</div>
     {% else %}
-    <div class="span2 ok">{{ data[key][90] }}%</div>
+        {% if data[key][90] < 90 %}
+        <div class="span2 critical">{{ data[key][90] }}%</div>
+        {% else %}
+        <div class="span2 ok">{{ data[key][90] }}%</div>
+        {% endif %}
     {% endif %}
   </div>
   {% endfor %}
