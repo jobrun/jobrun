@@ -85,6 +85,21 @@ class JobRun2:
 	successRate = self.jd.get(rk)
 	return successRate
 
+    def getSuccess(self,rk,days):
+	start = datetime.now()
+    	stop = start-timedelta(days)
+	statusSum = 0.0
+	numjobs = 0
+	try:
+		jl_total = self.jl.get_count(rk, column_start=start, column_finish=stop)
+		print jl_total
+	except:
+        	return None
+    	jl_failure = self.jf.get_count(rk,column_start=start, column_finish=stop)
+	print jl_failure
+	failRate = (float(jl_failure) / float(jl_total)) * 100
+	return (100 - failRate) 
+
     def insertJobRs(self,dataset,action,jobDict):
 	job_uuid = uuid4()
         year = int(jobDict['started'].year)
@@ -106,7 +121,7 @@ class JobRun2:
 	self.jf.insert(rk,{started:uuid},ttl=7776000)
 
     def insertJobDashboardSuccess(self,rk,days,successRate):
-	self.jd.insert(rk,{str(days):float(successRate)})
+	self.jd.insert(rk,{int(days):float(successRate)})
 
 
 
