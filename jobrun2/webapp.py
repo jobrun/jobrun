@@ -12,30 +12,27 @@ from jobrun2 import JobRun2
 
 jr = JobRun2()
 
-#@app.route('/jobrun2/record_job', methods=['POST'])
-#def record_job():
-    #jobresults = {}
+@app.route('/jobrun2/record_job', methods=['POST'])
+def record_job():
+    jobresults = {}
     #print request.form
-    #started = datetime.datetime.strptime(request.form['started'], '%m/%d/%Y %H:%M:%S.%f')
-    #jobresults['dataset'] = request.form['dataset']
-    #jobresults['action'] = request.form['action']
-    #jobresults['status'] = int(request.form['status'])
-    #jobresults['output'] = request.form['output']
-    #if request.form['command']:
-        #jobresults['command'] = request.form['command']
-    #if request.form['username']:
-        #jobresults['username'] = request.form['username']
-    #if request.form['program']:
-        #jobresults['program'] = request.form['program']
-    #if request.form['machine']:
-        #jobresults['machine'] = request.form['machine']
+    started = datetime.datetime.strptime(request.form['started'], '%m/%d/%Y %H:%M:%S.%f')
+    jobresults['dataset'] = request.form['dataset']
+    jobresults['action'] = request.form['action']
+    jobresults['status'] = int(request.form['status'])
+    jobresults['output'] = request.form['output']
+    if request.form['command']:
+        jobresults['command'] = request.form['command']
+    if request.form['username']:
+        jobresults['username'] = request.form['username']
+    if request.form['program']:
+        jobresults['program'] = request.form['program']
+    if request.form['machine']:
+        jobresults['machine'] = request.form['machine']
 
-    #jobid = uuid4()
-    #year = int(datetime.datetime.strftime(started, '%Y'))
-    #rk = (jobresults['dataset'], jobresults['action'], year)
-    #jl.insert(rk, {started: jobid})
-    #jr.insert(jobid, jobresults)
-    #return('OK')
+    rk = (jobresults['dataset'], jobresults['action'])
+    jr.insertJobResults(rk, jobresults)
+    return('OK')
 
 @app.route('/jobrun2')
 def show_jobs():
