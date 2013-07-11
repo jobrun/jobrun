@@ -87,18 +87,18 @@ class JobRun2:
 
     def insertJobRs(self,dataset,action,jobDict):
 	job_uuid = uuid4()
-        year = int(jobDict['started'].year())
+        year = int(jobDict['started'].year)
 	jl_rk = [dataset,action]
-        jobresults = {}
-        if jobDict['status']: job_results['status'] 
-        if jobDict['output']: job_results['output'] 
-        if jobDict['command']: job_results['command'] 
-        if jobDict['username']: job_results['username'] 
-        if jobDict['program']: job_results['program'] 
-        if jobDict['machine']: job_results['machine'] 
-	self.jl.insert(jl_rk,{started:job_uuid})
-	self.jr.insert(job_uuid,job_restults,ttl=7776000)
-	if jobDict['status'] == 1:
+        job_results = {}
+        if jobDict.has_key('status'): job_results['status'] = jobDict['status']
+        if jobDict.has_key('output'): job_results['output'] = jobDict['output']
+        if jobDict.has_key('command'): job_results['command'] = jobDict['command']
+        if jobDict.has_key('username'): job_results['username'] = jobDict['username']
+        if jobDict.has_key('program'): job_results['program'] = jobDict['program']
+        if jobDict.has_key('machine'): job_results['machine'] = jobDict['machine']
+	self.jl.insert(jl_rk,{jobDict['started']:job_uuid})
+	self.jr.insert(job_uuid,job_results,ttl=7776000)
+	if jobDict['status'] != 0:
 		self.insertJobRsFailure(dataset,action,jobDict['started'],uuid)
 
     def insertJobRsFailure(self,dataset,action,dt,uuid):
