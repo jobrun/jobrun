@@ -39,11 +39,15 @@ def show_jobs():
     jobs = jr.getJobKeys()
     todayYear = datetime.datetime.now().year
     for job in jobs:
-        if int(job[2]) == int(todayYear):
-            data[(job[0], job[1])][0] = jr.getLast(job)
-            data[(job[0], job[1])][1] = jr.getToday(job)
-            if not isinstance(data[(job[0], job[1])][1], float):
-                data[(job[0], job[1])][1] = 'None'
+        if data.has_key(job):
+            data[job][0] = jr.getLast(job)
+            data[job][1] = jr.getToday(job)
+        else:
+            data[job] = {}
+            data[job][0] = jr.getLast(job)
+            data[job][1] = jr.getToday(job)
+        if not isinstance(data[(job[0], job[1])][1], float):
+            data[(job[0], job[1])][1] = 'None'
     return render_template('dashboard.html', data=data) 
 
 if __name__ == '__main__':
