@@ -14,10 +14,10 @@
   {% for key in data.keys() %}
   <div class="row-fluid">
     <div class="span2"><a href="#">{{ key[0] }} - {{ key[1] }}</a></div>
-    {% if data[key][0] == "Fail" %}
-    <div class="span2 critical">{{ data[key][0] }}</div>
+    {% if data[key][0] != 0 %}
+    <div class="span2 critical">Fail</div>
     {% else %}
-    <div class="span2 ok">{{ data[key][0] }}</div>
+    <div class="span2 ok">Success</div>
     {% endif %}
 	
      {% if not data[key][1] %}
@@ -32,7 +32,7 @@
     {% if not data[key][30] %}
 	<div class="span2 unknown">None</div>
     {% else %}
-    	{% if data[key][30] < 90 %}
+    	{% if data[key][30] < 80 %}
         <div class="span2 critical">{{ data[key][30] }}%</div>
         {% else %}
         <div class="span2 ok">{{ data[key][30] }}%</div>
