@@ -15,9 +15,9 @@
   <div class="row-fluid">
     <div class="span2"><a href="#">{{ key[0] }} - {{ key[1] }}</a></div>
     {% if data[key][0] != 0 %}
-    <div class="span2 critical">Fail</div>
+      <div class="span2 critical">Fail</div>
     {% else %}
-    <div class="span2 ok">Success</div>
+      <div class="span2 ok">Success</div>
     {% endif %}
 	
      {% if not data[key][1] %}
@@ -29,33 +29,17 @@
     	<div class="span2 ok">{{ data[key][1] }}%</div>
     	{% endif %}
     {% endif %}
-    {% if not data[key][30] %}
-	<div class="span2 unknown">None</div>
-    {% else %}
-    	{% if data[key][30] < 80 %}
-        <div class="span2 critical">{{ data[key][30] }}%</div>
+    {% for days in [30, 60, 90] %}
+      {% if not data[key][days] %}
+	  <div class="span2 unknown">None</div>
+      {% else %}
+    	{% if data[key][days] < 80 %}
+          <div class="span2 critical">{{ data[key][days] }}%</div>
         {% else %}
-        <div class="span2 ok">{{ data[key][30] }}%</div>
+          <div class="span2 ok">{{ data[key][days] }}%</div>
         {% endif %}
-    {% endif %}
-    {% if not data[key][60] %}
-	<div class="span2 unknown">None</div>
-    {% else %}
-        {% if data[key][60] < 90 %}
-        <div class="span2 critical">{{ data[key][60] }}%</div>
-        {% else %}
-        <div class="span2 ok">{{ data[key][60] }}%</div>
-        {% endif %}
-    {% endif %}
-    {% if not data[key][90] %}
-	<div class="span2 unknown">None</div>
-    {% else %}
-        {% if data[key][90] < 90 %}
-        <div class="span2 critical">{{ data[key][90] }}%</div>
-        {% else %}
-        <div class="span2 ok">{{ data[key][90] }}%</div>
-        {% endif %}
-    {% endif %}
+      {% endif %}
+    {% endfor %}
   </div>
   {% endfor %}
 </div>
