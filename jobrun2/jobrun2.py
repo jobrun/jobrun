@@ -43,8 +43,8 @@ class JobRun2:
         for status in statuses.values():
             if status['status'] == 0:
                 s += 1
-        print s
-        print len(statuses)
+        #print s
+        #print len(statuses)
         success_rate = (float(s)/float(len(statuses))) * 100
         return success_rate
 
