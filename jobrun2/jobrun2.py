@@ -2,6 +2,7 @@
 from pycassa.pool import ConnectionPool
 from pycassa.columnfamily import ColumnFamily
 from datetime import datetime, timedelta
+from uuid import uuid4
 
 class JobRun2:
     def __init__(self):
@@ -12,6 +13,7 @@ class JobRun2:
         self.jl = ColumnFamily(self.pool, 'job_lookup')
         self.jr = ColumnFamily(self.pool, 'job_results')
         self.jd = ColumnFamily(self.pool, 'job_dashboard')
+        self.jf = ColumnFamily(self.pool, 'job_failures')
 
     def closePool(self):
         pass	
@@ -55,6 +57,14 @@ class JobRun2:
             self.rks.append(job[0])
 	return self.rks
 
+    def getJobKey(self,rk):
+	self.rk = []
+	try:
+            rk = self.jl.get(rk,column_count=0, filter_empty=False)
+	    return self.rk
+	except NotFoundException:
+	    return None  
+
     def getJobDashboardKeys(self):
 	self.rks = []
         jobs = self.jd.get_range(column_count=0, filter_empty=False)
@@ -75,12 +85,28 @@ class JobRun2:
 	successRate = self.jd.get(rk)
 	return successRate
 
-    def insertJobResults(self,dataset,action,jobDict):
-	year = date.today().year
-	rk = [dataset,action,str(year)]
-	self.jr.insert(rk,jobDict)
+    def insertJobRs(self,dataset,action,jobDict):
+	job_uuid = uuid4()
+        year = int(jobDict['started'].year())
+	jl_rk = [dataset,action]
+        jobresults = {}
+        if jobDict['status']: job_results['status'] 
+        if jobDict['output']: job_results['output'] 
+        if jobDict['command']: job_results['command'] 
+        if jobDict['username']: job_results['username'] 
+        if jobDict['program']: job_results['program'] 
+        if jobDict['machine']: job_results['machine'] 
+	self.jl.insert(jl_rk,{started:job_uuid})
+	self.jr.insert(job_uuid,job_restults,ttl=7776000)
+	if jobDict['status'] == 1:
+		self.insertJobRsFailure(dataset,action,jobDict['started'],uuid)
 
-    def insertJobSuccess(self,rk,days,successRate):
+    def insertJobRsFailure(self,dataset,action,dt,uuid):
+	rk = [dataset,action]
+	self.jf.insert(rk,{started:uuid},ttl=7776000)
+
+    def insertJobDashboardSuccess(self,rk,days,successRate):
 	self.jd.insert(rk,{str(days):float(successRate)})
+
 
 
