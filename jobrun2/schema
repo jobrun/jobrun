@@ -1,5 +1,5 @@
 create column family job_lookup
-with key_validation_class = 'CompositeType(UTF8Type, UTF8Type, IntegerType)'
+with key_validation_class = 'CompositeType(UTF8Type, UTF8Type)'
 and comparator = 'ReversedType(DateType)'
 and default_validation_class = UUIDType;
 
@@ -18,15 +18,10 @@ and column_metadata=[
 
 create column family job_dashboard
 with key_validation_class = 'CompositeType(UTF8Type, UTF8Type)'
-and comparator = UTF8Type
+and comparator = IntegerType
 and default_validation_class = FloatType;
 
-create column family job_sf
-with default_validation_class=CounterColumnType
-and comparator = DateType
-and replicate_on_write=true;
-
 create column family job_failures
-with key_validation_class = 'CompositeType(UTF8Type, UTF8Type, IntegerType)'
-and comparator = DateType
+with key_validation_class = 'CompositeType(UTF8Type, UTF8Type)'
+and comparator = 'ReversedType(DateType)'
 and default_validation_class = UUIDType;
