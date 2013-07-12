@@ -24,9 +24,9 @@
 	<div class="span2 unknown">None</div>
      {% else %}
     	{%  if data[key][1] < 90 %}
-    	<div class="span2 critical">{{ data[key][1]|round(2, 'floor') }}%</div>
+    	<div class="span2 critical">{{'%0.2f'| format(data[key][1]|float) }}%</div>
     	{% else %}
-    	<div class="span2 ok">{{ data[key][1]|round(2, 'floor') }}%</div>
+    	<div class="span2 ok">{{'%0.2f'| format(data[key][1]|float) }}%</div>
     	{% endif %}
     {% endif %}
     {% for days in [30, 60, 90] %}
