@@ -13,7 +13,7 @@
 
   {% for key in data.keys() %}
   <div class="row-fluid">
-    <div class="span2"><a href="#">{{ key[0] }} - {{ key[1] }}</a></div>
+    <div class="span2"><a href="/jobrun2/jobfailures?rk={{ key[0] }}">{{ key[0] }} - {{ key[1] }}</a></div>
     {% if data[key][0] != 0 %}
       <div class="span2 critical">Fail</div>
     {% else %}

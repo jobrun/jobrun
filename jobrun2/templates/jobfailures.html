@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block body %}
+
+  {% for key in jobrs.keys() %}
+  <div class="row-fluid">
+    <div class="span2"><h1>{{ key.upper() }}</h1></div>
+    <div class="span">{{ jobrs[key] }}</div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

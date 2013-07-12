@@ -24,10 +24,10 @@ class JobRun2:
             jlookup = self.jl.get(rk, column_count=1)
             print "Jlookup = %s" % (jlookup)
             status = self.jr.get(jlookup.values()[0], column_start='status', column_finish='status')['status']
-	    print "status = %s,%s" % (__package__,status)
+	    #print "status = %s,%s" % (__package__,status)
         except Exception,e:
             return e
-        return status
+        return float(status)
 
     def getToday(self, rk):
         today = datetime.strptime(datetime.today().strftime('%m/%d/%Y 00:00:00'), '%m/%d/%Y %H:%M:%S')
@@ -65,6 +65,10 @@ class JobRun2:
 	except NotFoundException:
 	    return None  
 
+    def getFailedJobUUIDs(self,rk):
+        job_uuids = self.jf.multiget(rk)	
+	return job_uuids
+
     def getJobDashboardKeys(self):
 	self.rks = []
         jobs = self.jd.get_range(column_count=0, filter_empty=False)
@@ -84,6 +88,10 @@ class JobRun2:
     def getJobDashboardSuccess(self,rk):
 	successRate = self.jd.get(rk)
 	return successRate
+
+    def getJobRs(self,rk):
+	job_rs = self.jr.get(rk)
+	return job_rs
 
     def getSuccess(self,rk,days):
 	start = datetime.now()
