@@ -66,8 +66,13 @@ class JobRun2:
 	    return None  
 
     def getFailedJobUUIDs(self,rk):
-        job_uuids = self.jf.multiget(rk)	
-	return job_uuids
+	rks = []
+        jobs = self.jl.get_range(rk,rk,filter_empty=True)
+        for job in jobs:
+            rks.append(job)
+	return rks
+        #job_uuids = self.jf.get_range(rk)	
+	#return job_uuids
 
     def getJobDashboardKeys(self):
 	self.rks = []

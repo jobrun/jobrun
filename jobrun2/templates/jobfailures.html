@@ -1,10 +1,9 @@
 {% extends "layout.html" %}
 {% block body %}
-
-  {% for key in jobrs.keys() %}
+  {% for key in jobuuids[0][1].keys() %}
   <div class="row-fluid">
-    <div class="span2"><h1>{{ key.upper() }}</h1></div>
-    <div class="span">{{ jobrs[key] }}</div>
+    <div class="span2">{{ key }}</div>
+    <div><a href="/jobrun2/jobresults?uuid={{ jobuuids[0][1][key] }}">{{ jobuuids[0][1][key] }}</a></div>
   </div>
   {% endfor %}
 </div>
