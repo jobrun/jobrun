@@ -66,7 +66,7 @@ class JobRun2:
     def getFailedJobUUIDs(self,rk):
 	rks = []
 	try:
-            jobs = self.jl.get(rk)
+            jobs = self.jf.get(rk)
 	    return jobs
 	except NotFoundException:
 	    jobs = {}

@@ -3,7 +3,13 @@
   {% for key in jobrs.keys() %}
   <div class="row-fluid">
     <div class="span2"><h1>{{ key.upper() }}</h1></div>
-    <div class="span">{{ jobrs[key] }}</div>
+	{% if key == 'output' %}
+	   {% for line in jobrs[key].split('\n') %}
+	    <div class="span">{{ line }}</div>
+           {% endfor %}	
+	{% else %}
+    	<div class="span">{{ jobrs[key] }}</div>
+	{% endif %}
   </div>
   {% endfor %}
 </div>
