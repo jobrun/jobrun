@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from pycassa.pool import ConnectionPool
 from pycassa.columnfamily import ColumnFamily
+from pycassa import NotFoundException
 from datetime import datetime, timedelta
 from uuid import uuid4
 
@@ -67,10 +68,13 @@ class JobRun2:
 
     def getFailedJobUUIDs(self,rk):
 	rks = []
-        jobs = self.jl.get_range(rk,filter_empty=True)
-        for job in jobs:
-            rks.append(job)
-	return rks
+	try:
+            jobs = self.jl.get(rk)
+	    return jobs
+	except NotFoundException:
+	    jobs = {}
+	    jobs['Error'] = 'No Jobs Found'
+	    return jobs
 
     def getJobDashboardKeys(self):
 	self.rks = []

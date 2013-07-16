@@ -13,7 +13,7 @@
 
   {% for key in data.keys() %}
   <div class="row-fluid">
-    <div class="span2"><a href="{{ url_for('jobfailures', job_failure_rk=key) }}">{{ key[0] }} - {{ key[1] }}</a></div>
+    <div class="span2"><a href="{{ url_for('jobfailures', a=key[1], dataset=key[0] ) }}">{{ key[0] }} - {{ key[1] }}</a></div>
     {% if data[key][0] != 0 %}
       <div class="span2 critical">Fail</div>
     {% else %}
