@@ -20,12 +20,9 @@ class JobRun2:
         pass	
 
     def getLast(self,rk):
-	print rk
         try:
             jlookup = self.jl.get(rk, column_count=1)
-            print "Jlookup = %s" % (jlookup)
             status = self.jr.get(jlookup.values()[0], column_start='status', column_finish='status')['status']
-	    #print "status = %s,%s" % (__package__,status)
         except Exception,e:
             return e
         return float(status)
@@ -46,8 +43,6 @@ class JobRun2:
         for status in statuses.values():
             if status['status'] == 0:
                 s += 1
-        #print s
-        #print len(statuses)
         success_rate = (float(s)/float(len(statuses))) * 100
         return success_rate
 
@@ -109,11 +104,9 @@ class JobRun2:
 	numjobs = 0
 	try:
 		jl_total = self.jl.get_count(rk, column_start=start, column_finish=stop)
-		print jl_total
 	except:
         	return None
     	jl_failure = self.jf.get_count(rk,column_start=start, column_finish=stop)
-	print jl_failure
 	failRate = (float(jl_failure) / float(jl_total)) * 100
 	return (100 - failRate) 
 

@@ -34,8 +34,6 @@ def show_jobs():
 @app.route('/jobrun2/jobfailures/<dataset>/<a>')
 def jobfailures(dataset,a):
     job_failure_rk = [dataset,a]
-    print job_failure_rk
-    print "Job_failure_rk1 2 = %s %s" % (job_failure_rk[0],job_failure_rk[1])
     jobuuids = jr.getFailedJobUUIDs(job_failure_rk)
     return render_template('jobfailures.html',jobuuids=jobuuids ,job_failure_rk=job_failure_rk)
 
