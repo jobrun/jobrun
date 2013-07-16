@@ -31,17 +31,16 @@ def show_jobs():
             data[(job[0], job[1])][1] = 'None'
     return render_template('dashboard.html', data=data) 
 
-@app.route('/jobrun2/jobfailures')
-def job_failures():
-    rk = ('Video','SDV Collection AAB')
-    jobuuids = jr.getFailedJobUUIDs(rk)
-    return render_template('jobfailures.html',jobuuids=jobuuids )
+@app.route('/jobrun2/jobfailures/<job_failure_rk>')
+def jobfailures(job_failure_rk):
+    jobuuids = jr.getFailedJobUUIDs(job_failure_rk)
+    return render_template('jobfailures.html',jobuuids=jobuuids ,job_failure_rk=job_failure_rk)
 
-@app.route('/jobrun2/jobresults', methods=['GET','POST'])
-def show_job_results():
-    job_uuid = uuid.UUID(request.args['job_uuid'])
+@app.route('/jobrun2/jobresults/<job_uuid>')
+def jobresults(job_uuid):
+    job_uuid = uuid.UUID(job_uuid)
     jobrs = jr.getJobRs(job_uuid)
-    return render_template('jobresults.html', jobrs=jobrs , job_uuid = job_uuid )
+    return render_template('jobresults.html', jobrs=jobrs,job_uuid=job_uuid )
 
 @app.route('/jobrun2/record_job', methods=['POST'])
 def record_job():
