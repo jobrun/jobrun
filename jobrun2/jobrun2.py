@@ -64,7 +64,9 @@ class JobRun2:
             rk = self.jl.get(rk,column_count=0, filter_empty=False)
 	    return self.rk
 	except NotFoundException:
-	    return None  
+	    jobs = {}
+	    jobs['Error'] = 'No Keys Found'
+	    return jobs
 
     def getFailedJobUUIDs(self,rk):
 	rks = []
