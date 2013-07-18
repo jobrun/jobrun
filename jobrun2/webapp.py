@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for, flash
 from uuid import *
 import uuid
 from pycassa.pool import ConnectionPool
@@ -8,6 +8,7 @@ from pycassa.columnfamily import ColumnFamily
 import datetime
 
 app = Flask(__name__)
+app.secret_key = 'some_secret'
 
 from jobrun2 import JobRun2
 
@@ -63,6 +64,20 @@ def record_job():
     rk = (jobresults['dataset'], jobresults['action'])
     jr.insertJobResults(rk, jobresults)
     return('OK')
+
+@app.route('/jobrun2/task/enable/<dataset>/<action>')
+def enable_task(dataset, action):
+    return redirect(url_for('show_jobs'))
+
+@app.route('/jobrun2/task/disable/<dataset>/<action>')
+def disable_task(dataset, action):
+    return redirect(url_for('show_jobs'))
+
+@app.route('/jobrun2/task/edit/<dataset>/<action>')
+def edit_task(dataset, action):
+    rk = (dataset, action)
+    flash('Task does not exist')
+    return redirect(url_for('show_jobs'))
 
 if __name__ == '__main__':
     app.run(debug=True)
