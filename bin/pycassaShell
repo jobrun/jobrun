@@ -1,4 +1,4 @@
-#!/Users/crodetsk/.virtualenvs/jobrun2/bin/python
+#!/Users/crodetsk/.virtualenvs/jtasks/bin/python
 
 """
 interactive Cassandra Python shell
