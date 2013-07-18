@@ -3,40 +3,48 @@
 
 <div class="container-fluid">
   <div class="row-fluid">
-    <div class="span2">Job</div>
-    <div class="span2">Last</div>
-    <div class="span2">Today</div>
-    <div class="span2">30 Days</div>
-    <div class="span2">60 Days</div>
-    <div class="span2">90 Days</div>
+    <div class="span1">Task</div>
+    <div class="span5">Job</div>
+    <div class="span1">Status</div>
+    <div class="span1">Last</div>
+    <div class="span1">Today</div>
+    <div class="span1">30 Days</div>
+    <div class="span1">60 Days</div>
+    <div class="span1">90 Days</div>
   </div>
 
-  {% for key in data.keys() %}
+  {% for key,value in data|dictsort(false) %}
   <div class="row-fluid">
-    <div class="span2"><a href="{{ url_for('jobfailures', a=key[1], dataset=key[0] ) }}">{{ key[0] }} - {{ key[1] }}</a></div>
+    <div class="span1">
+      <a href="{{ url_for('enable_task', dataset=key[0], action=key[1]) }}"><i class="icon-play"></i></a>
+      <a href="{{ url_for('disable_task', dataset=key[0], action=key[1]) }}"><i class="icon-pause"></i></a>
+      <a href="{{ url_for('edit_task', dataset=key[0], action=key[1]) }}#"><i class="icon-pencil"></i></a>
+    </div>
+    <div class="span5"><a href="{{ url_for('jobfailures', a=key[1], dataset=key[0] ) }}">{{ key[0] }} - {{ key[1] }}</a></div>
+    <div class="span1">Unmanaged</div>
     {% if data[key][0] != 0 %}
-      <div class="span2 critical">Fail</div>
+      <div class="span1 critical">Fail</div>
     {% else %}
-      <div class="span2 ok">Success</div>
+      <div class="span1 ok">Success</div>
     {% endif %}
 	
      {% if not data[key][1] %}
-	<div class="span2 unknown">None</div>
+	<div class="span1 unknown">None</div>
      {% else %}
     	{%  if data[key][1] < 90 %}
-    	<div class="span2 critical">{{'%0.2f'| format(data[key][1]|float) }}%</div>
+    	<div class="span1 critical">{{'%0.2f'| format(data[key][1]|float) }}%</div>
     	{% else %}
-    	<div class="span2 ok">{{'%0.2f'| format(data[key][1]|float) }}%</div>
+    	<div class="span1 ok">{{'%0.2f'| format(data[key][1]|float) }}%</div>
     	{% endif %}
     {% endif %}
     {% for days in [30, 60, 90] %}
       {% if not data[key][days] %}
-	  <div class="span2 unknown">None</div>
+	  <div class="span1 unknown">None</div>
       {% else %}
     	{% if data[key][days] < 80 %}
-          <div class="span2 critical">{{ data[key][days]|round(2, 'floor') }}%</div>
+          <div class="span1 critical">{{ data[key][days]|round(2, 'floor') }}%</div>
         {% else %}
-          <div class="span2 ok">{{ data[key][days]|round(2, 'floor') }}%</div>
+          <div class="span1 ok">{{ data[key][days]|round(2, 'floor') }}%</div>
         {% endif %}
       {% endif %}
     {% endfor %}
