@@ -4,6 +4,7 @@ from pycassa.columnfamily import ColumnFamily
 from pycassa import NotFoundException
 from datetime import datetime, timedelta
 from uuid import uuid4
+from string import *
 
 class JobRun2:
     def __init__(self):
@@ -24,7 +25,7 @@ class JobRun2:
             jlookup = self.jl.get(rk, column_count=1)
             status = self.jr.get(jlookup.values()[0], column_start='status', column_finish='status')['status']
         except Exception,e:
-            return e
+            return float(100)
         return float(status)
 
     def getToday(self, rk):
@@ -34,11 +35,11 @@ class JobRun2:
         try:
             jlookup = self.jl.get(rk, column_start=tomorrow, column_finish=today)
         except Exception, e:
-            return e
+            return float(100)
         try:
             statuses = self.jr.multiget(jlookup.values(), column_start='status', column_finish='status')
         except Exception, e:
-            return e
+            return float(100)
             
         for status in statuses.values():
             if status['status'] == 0:
@@ -63,26 +64,42 @@ class JobRun2:
 	    jobs['Error'] = 'No Keys Found'
 	    return jobs
 
-    def getFailedJobUUIDs(self,rk):
+    def getFailedJobUUIDs(self,rk,days=91):
+	start = datetime.today()
+        stop = start-timedelta(days)
+	print start
+	print stop
 	rks = []
 	try:
-            jobs = self.jf.get(rk)
+	    if (days == 91):
+	        jobs = self.jf.get(rk)
+	    else:
+	        jobs = self.jf.get(rk,column_start=start,column_finish=stop,column_count=1000)
 	    return jobs
-	except NotFoundException:
+	except NotFoundException,e:
 	    jobs = {}
-	    jobs['Error'] = 'No Jobs Found'
+	    jobs['Error'] = e
 	    return jobs
 
     def getJobDashboardKeys(self):
 	self.rks = []
-        jobs = self.jd.get_range(column_count=0, filter_empty=False)
+	try:
+            jobs = self.jd.get_range(column_count=0, filter_empty=False)
+	except NotFoundException:
+	    return none
         for job in jobs:
             self.rks.append(job[0])
 	return self.rks
 
     def getJobDashboardSuccessAll(self):
-	rks = self.getJobDashboardKeys()
-	successRates = self.jd.multiget(rks)
+	successRates = {}
+	jl_rks = self.jl.get_range(column_count=0, filter_empty=False)
+	for key in jl_rks:
+	    successRates[key[0]] = {}
+	    successRates[key[0]][0] = self.getLast(key[0])
+	    successRates[key[0]][1] = self.getToday(key[0])
+	    for days in [90,60,30]:
+	    	successRates[key[0]][days] = self.getSuccess(key[0],(days))
 	return successRates
 
     def getJobDashboardSuccessMulti(self,rks):
@@ -90,8 +107,11 @@ class JobRun2:
 	return successRates
 
     def getJobDashboardSuccess(self,rk):
-	successRate = self.jd.get(rk)
-	return successRate
+	try:
+	    successRate = self.jd.get(rk)
+	    return successRate
+	except NotFoundException:
+	    return None
 
     def getJobRs(self,rk):
 	job_rs = self.jr.get(rk)
@@ -104,10 +124,10 @@ class JobRun2:
 	numjobs = 0
 	try:
 		jl_total = self.jl.get_count(rk, column_start=start, column_finish=stop)
+    		jl_failure = self.jf.get_count(rk,column_start=start, column_finish=stop)
+		failRate = (float(jl_failure) / float(jl_total)) * 100
 	except:
-        	return None
-    	jl_failure = self.jf.get_count(rk,column_start=start, column_finish=stop)
-	failRate = (float(jl_failure) / float(jl_total)) * 100
+		failRate = 100
 	return (100 - failRate) 
 
     def insertJobRs(self,dataset,action,jobDict):
