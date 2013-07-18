@@ -17,7 +17,7 @@ pool = ConnectionPool('jobrun', server_list=['tamp20-seot-cas1.bhn.net:9160',
 
 print 'Connected to cassandra...'
 
-jl = ColumnFamily(pool, 'job_lookup')
+jl = ColumnFamily(pool, 'job_lookup2')
 jr = ColumnFamily(pool, 'job_results')
 jf = ColumnFamily(pool, 'job_failures')
 
@@ -34,7 +34,7 @@ row = cur.fetchone()
 while not row == None:
     started = row[0]
     started_date = datetime.strptime(started.strftime('%m/%d/%Y'), '%m/%d/%Y')
-    rk = (row[1], row[2])
+    rk = (unicode(row[1]), unicode(row[2]))
     jobresults = {}
     if row[3]: jobresults['status'] = int(row[3])
     if row[4]: jobresults['output'] = row[4]
