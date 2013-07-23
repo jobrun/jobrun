@@ -10,7 +10,7 @@
     <div class="span1">60 Days</div>
     <div class="span1">30 Days</div>
   </div>
-  {% for key in data.keys() %}
+  {% for key in keylist %}
       <div class="row-fluid">
         <div class="span4"><a href="{{ url_for('jobfailures', action=key[1], dataset=key[0], days=91 ) }}">{{ key[0] }} - {{ key[1] }}</a></div>
 	  {% for days in data[key].keys() %}

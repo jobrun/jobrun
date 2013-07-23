@@ -5,6 +5,7 @@ from pycassa import NotFoundException
 from datetime import datetime, timedelta
 from uuid import uuid4
 from string import *
+from operator import itemgetter, attrgetter
 
 class JobRun2:
     def __init__(self):
@@ -50,11 +51,13 @@ class JobRun2:
         return success_rate
 
     def getJobKeys(self):
-	self.rks = []
+	rks = []
         jobs = self.jl.get_range(column_count=0, filter_empty=False)
         for job in jobs:
-            self.rks.append(job[0])
-	return self.rks
+            rks.append(job[0])
+	x = sorted(rks,key=itemgetter(0,1)) 
+	#sorted(x,key=itemgetter(1),reverse=True) 
+	return x 
 
     def getJobKey(self,rk):
 	self.rk = []
@@ -93,13 +96,13 @@ class JobRun2:
 
     def getJobDashboardSuccessAll(self):
 	successRates = {}
-	jl_rks = self.jl.get_range(column_count=0, filter_empty=False)
+	jl_rks = self.getJobKeys()
 	for key in jl_rks:
-	    successRates[key[0]] = {}
-	    successRates[key[0]][0] = self.getLast(key[0])
-	    successRates[key[0]][1] = self.getToday(key[0])
+	    successRates[key] = {}
+	    successRates[key][0] = self.getLast(key)
+	    successRates[key][1] = self.getToday(key)
 	    for days in [90,60,30]:
-	    	successRates[key[0]][days] = self.getSuccess(key[0],(days))
+	    	successRates[key][days] = self.getSuccess(key,(int(days)))
 	return successRates
 
     def getJobDashboardSuccessMulti(self,rks):
