@@ -3,30 +3,30 @@
 
 <div class="container-fluid">
   <div class="row-fluid">
-    <div class="span2">Job</div>
+    <div class="span4">Job</div>
     <div class="span2">Last</div>
-    <div class="span2">Today</div>
-    <div class="span2">90 Days</div>
-    <div class="span2">60 Days</div>
-    <div class="span2">30 Days</div>
+    <div class="span1">Today</div>
+    <div class="span1">90 Days</div>
+    <div class="span1">60 Days</div>
+    <div class="span1">30 Days</div>
   </div>
   {% for key in data.keys() %}
       <div class="row-fluid">
-        <div class="span2"><a href="{{ url_for('jobfailures', a=key[1], dataset=key[0] ) }}">{{ key[0] }} - {{ key[1] }}</a></div>
+        <div class="span4"><a href="{{ url_for('jobfailures', action=key[1], dataset=key[0], days=91 ) }}">{{ key[0] }} - {{ key[1] }}</a></div>
 	  {% for days in data[key].keys() %}
 	  {% if days == 0 %}
-		{% if data[key][days] == 0 %}
-          	<div class="span2 ok">Success</div>
-		{% else %}
-		<div class="span2 critical">Failed</div>
-		{% endif %}
-      	  {% else %}
+                {% if data[key][days] == 1 %}
+                   <div class="span2 ok">Success</div>
+                {% else %}
+                   <div class="span2 critical">Failed</div>
+                {% endif %}
+          {% else %}
           {% if data[key][days] < 80 %}
-          <div class="span2 warning"><a href="{{ url_for('jobfailures', a=key[1], dataset=key[0],days=days ) }}" >{{ data[key][days]|round(2, 'floor') }}</a></div>
-        {% else %}
-          <div class="span2 ok"><a href="{{ url_for('jobfailures', a=key[1], dataset=key[0],days=days ) }}" >{{ data[key][days]|round(2, 'floor') }}</a></div>
+          <div class="span1 warning"><a href="{{ url_for('jobfailures', action=key[1], dataset=key[0],days=days ) }}" >{{ data[key][days]|round(2, 'floor') }}</a></div>
+           {% else %}
+          <div class="span1 ok"><a href="{{ url_for('jobfailures', action=key[1], dataset=key[0],days=days ) }}" >{{ data[key][days]|round(2, 'floor') }}</a></div>
         {% endif %}
-      {% endif %}
+        {% endif %}
   {% endfor %}
      </div>
   {% endfor %}

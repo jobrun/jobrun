@@ -21,10 +21,11 @@ def show_jobs():
     todayYear = datetime.datetime.now().year
     return render_template('dashboard.html', data=data,keylist=keylist) 
 
-@app.route('/jobrun2/jobfailures/<dataset>/<a>')
-def jobfailures(dataset,a):
-    job_failure_rk = [dataset,a]
-    jobuuids = jr.getFailedJobUUIDs(job_failure_rk)
+@app.route('/jobrun2/jobfailures/<dataset>/<action>/<days>')
+def jobfailures(dataset,action,days):
+    days = int(days)
+    job_failure_rk = [dataset,action]
+    jobuuids = jr.getFailedJobUUIDs(job_failure_rk,days)
     return render_template('jobfailures.html',jobuuids=jobuuids ,job_failure_rk=job_failure_rk)
 
 @app.route('/jobrun2/jobresults/<job_uuid>')

@@ -43,8 +43,8 @@ while not row == None:
     if row[7]: jobresults['program'] = row[7]
     if row[8]: jobresults['machine'] = row[8]
     jobid = uuid4()
-    jl.insert(rk, {started: jobid})
-    jr.insert(jobid, jobresults)
+    jl.insert(rk, timestamp=started_date, {started: jobid})
+    jr.insert(jobid, timestamp=started_date, jobresults)
     if int(row[3]) != 0:
-        jf.insert(rk, {started: jobid})
+        jf.insert(rk, timestamp=started_date, {started: jobid})
     row = cur.fetchone()

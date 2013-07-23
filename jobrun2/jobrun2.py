@@ -23,10 +23,10 @@ class JobRun2:
     def getLast(self,rk):
         try:
             jlookup = self.jl.get(rk, column_count=1)
-            status = self.jr.get(jlookup.values()[0], column_start='status', column_finish='status')['status']
+            status = self.jr.get(jlookup.values()[0],columns=['status']).values()[0]
         except Exception,e:
-            return float(100)
-        return float(status)
+            return float(-100)
+        return status
 
     def getToday(self, rk):
         today = datetime.strptime(datetime.today().strftime('%m/%d/%Y 00:00:00'), '%m/%d/%Y %H:%M:%S')
@@ -35,16 +35,18 @@ class JobRun2:
         try:
             jlookup = self.jl.get(rk, column_start=tomorrow, column_finish=today)
         except Exception, e:
-            return float(100)
+            return float(-100)
         try:
             statuses = self.jr.multiget(jlookup.values(), column_start='status', column_finish='status')
+            for status in statuses.values():
+                if status['status'] == 0:
+                    s += 1
+	        else:
+		    s = 2
+            success_rate = (float(s)/float(len(statuses))) * 100
         except Exception, e:
-            return float(100)
+            success_rate = float(99.99)
             
-        for status in statuses.values():
-            if status['status'] == 0:
-                s += 1
-        success_rate = (float(s)/float(len(statuses))) * 100
         return success_rate
 
     def getJobKeys(self):
@@ -64,21 +66,19 @@ class JobRun2:
 	    jobs['Error'] = 'No Keys Found'
 	    return jobs
 
-    def getFailedJobUUIDs(self,rk,days=91):
+    def getFailedJobUUIDs(self,rk,days):
 	start = datetime.today()
         stop = start-timedelta(days)
 	print start
 	print stop
 	rks = []
 	try:
-	    if (days == 91):
-	        jobs = self.jf.get(rk)
-	    else:
-	        jobs = self.jf.get(rk,column_start=start,column_finish=stop,column_count=1000)
-	    return jobs
+		ct = self.jf.get_count(rk,column_start=start,column_finish=stop)
+		jobs = self.jf.get(rk,column_start=start,column_finish=stop,column_count=ct)
+		return jobs
 	except NotFoundException,e:
 	    jobs = {}
-	    jobs['Error'] = e
+	    jobs['Error'] = 'No Failed Jobs Found For Time Period'
 	    return jobs
 
     def getJobDashboardKeys(self):
