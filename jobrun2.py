@@ -4,6 +4,8 @@ from pycassa.columnfamily import ColumnFamily
 from pycassa import NotFoundException
 from datetime import datetime, timedelta
 from uuid import uuid4
+from string import *
+from operator import itemgetter, attrgetter
 
 class JobRun2:
     def __init__(self):
@@ -22,36 +24,39 @@ class JobRun2:
     def getLast(self,rk):
         try:
             jlookup = self.jl.get(rk, column_count=1)
-            status = self.jr.get(jlookup.values()[0], column_start='status', column_finish='status')['status']
+            status = self.jr.get(jlookup.values()[0],columns=['status']).values()[0]
         except Exception,e:
-            return e
-        return float(status)
+            return float(-100)
+        return status
 
     def getToday(self, rk):
         today = datetime.strptime(datetime.today().strftime('%m/%d/%Y 00:00:00'), '%m/%d/%Y %H:%M:%S')
         tomorrow = today + timedelta(1)
-        s = 0
         try:
-            jlookup = self.jl.get(rk, column_start=tomorrow, column_finish=today)
+            jf_count = self.jf.get_count(rk, column_start=tomorrow, column_finish=today)
         except Exception, e:
-            return e
+            return float(-100)
         try:
             statuses = self.jr.multiget(jlookup.values(), column_start='status', column_finish='status')
+            for status in statuses.values():
+                if status['status'] == 0:
+                    s += 1
+	        else:
+		    s = 2
+            success_rate = (float(s)/float(len(statuses))) * 100
         except Exception, e:
-            return e
+            success_rate = float(99.99)
             
-        for status in statuses.values():
-            if status['status'] == 0:
-                s += 1
-        success_rate = (float(s)/float(len(statuses))) * 100
         return success_rate
 
     def getJobKeys(self):
-	self.rks = []
+	rks = []
         jobs = self.jl.get_range(column_count=0, filter_empty=False)
         for job in jobs:
-            self.rks.append(job[0])
-	return self.rks
+            rks.append(job[0])
+	x = sorted(rks,key=itemgetter(0,1)) 
+	#sorted(x,key=itemgetter(1),reverse=True) 
+	return x 
 
     def getJobKey(self,rk):
 	self.rk = []
@@ -63,26 +68,40 @@ class JobRun2:
 	    jobs['Error'] = 'No Keys Found'
 	    return jobs
 
-    def getFailedJobUUIDs(self,rk):
+    def getFailedJobUUIDs(self,rk,days):
+	start = datetime.today()
+        stop = start-timedelta(int(days))
+	print start
+	print stop
 	rks = []
 	try:
-            jobs = self.jf.get(rk)
-	    return jobs
-	except NotFoundException:
+		ct = self.jf.get_count(rk,column_start=start,column_finish=stop)
+		jobs = self.jf.get(rk,column_start=start,column_finish=stop,column_count=ct)
+		return jobs
+	except NotFoundException,e:
 	    jobs = {}
-	    jobs['Error'] = 'No Jobs Found'
+	    jobs['Error'] = 'No Failed Jobs Found For Time Period'
 	    return jobs
 
     def getJobDashboardKeys(self):
 	self.rks = []
-        jobs = self.jd.get_range(column_count=0, filter_empty=False)
+	try:
+            jobs = self.jd.get_range(column_count=0, filter_empty=False)
+	except NotFoundException:
+	    return none
         for job in jobs:
             self.rks.append(job[0])
 	return self.rks
 
     def getJobDashboardSuccessAll(self):
-	rks = self.getJobDashboardKeys()
-	successRates = self.jd.multiget(rks)
+	successRates = {}
+	jl_rks = self.getJobKeys()
+	for key in jl_rks:
+	    successRates[key] = {}
+	    successRates[key][0] = self.getLast(key)
+	    successRates[key][1] = self.getSuccess(key,1)
+	    for days in [90,60,30]:
+	    	successRates[key][days] = self.getSuccess(key,(int(days)))
 	return successRates
 
     def getJobDashboardSuccessMulti(self,rks):
@@ -90,8 +109,11 @@ class JobRun2:
 	return successRates
 
     def getJobDashboardSuccess(self,rk):
-	successRate = self.jd.get(rk)
-	return successRate
+	try:
+	    successRate = self.jd.get(rk)
+	    return successRate
+	except NotFoundException:
+	    return None
 
     def getJobRs(self,rk):
 	job_rs = self.jr.get(rk)
@@ -104,10 +126,10 @@ class JobRun2:
 	numjobs = 0
 	try:
 		jl_total = self.jl.get_count(rk, column_start=start, column_finish=stop)
+    		jl_failure = self.jf.get_count(rk,column_start=start, column_finish=stop)
+		failRate = (float(jl_failure) / float(jl_total)) * 100
 	except:
-        	return None
-    	jl_failure = self.jf.get_count(rk,column_start=start, column_finish=stop)
-	failRate = (float(jl_failure) / float(jl_total)) * 100
+		failRate = 100
 	return (100 - failRate) 
 
     def insertJobRs(self,dataset,action,jobDict):
