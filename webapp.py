@@ -79,5 +79,9 @@ def edit_task(dataset, action):
     flash('Task does not exist')
     return redirect(url_for('show_jobs'))
 
+@app.route('/jobrun2/task/add')
+def add_task():
+    return render_template('add_task.html')
+
 if __name__ == '__main__':
     app.run(debug=True)

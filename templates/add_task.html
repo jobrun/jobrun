@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% block body %}
+<script>
+$(document).ready(function(){
+    $('#dataset').keyup(function(){
+        $('#lockfile').val(this.value+'_'+$('#action').val().replace(/ /g,'_')+'.lck');
+    });
+    $('#action').keyup(function(){
+        $('#lockfile').val($('#dataset').val()+'_'+this.value.replace(/ /g,'_')+'.lck');
+    });
+    $("#taskForm").validate();
+    /*    rules: {
+            dataset: {
+                required: true,
+                minlength: 3
+            },
+            action: {
+                required: true,
+                minlength: 5
+            },
+        },
+        messages: {
+            dataset: {
+                required: "Please specify a dataset",
+                minlength: "Dataset must be at least 3 characters long"
+            },
+            action: {
+                required: "Please specify an action",
+                minlength: "Action must be at least 5 characters long"
+            }
+        }
+    });
+});*/
+
+</script>
+<form id="taskForm" name="taskForm" action="" method="get">
+  <fieldset>
+    <legend></legend>
+    <label>Dataset</label>
+    <input type="text" id="dataset" name="dataset" minlength=3 required />
+    <label>Action</label>
+    <input type="text" id="action" name="action">
+    <label>Target</label>
+    <input type="text" id="target">
+    <label>Script</label>
+    <input type="text" id="script">
+    <label>Script arguments</label>
+    <input type="text" id="arguments">
+    <label>Lock file</label>
+    <input type="text" id="lockfile" name="lockfile">
+  </fieldset>
+  <input type="submit" value="Submit">
+</form>
+
+{% endblock %}
