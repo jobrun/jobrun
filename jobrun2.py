@@ -70,11 +70,7 @@ class JobRun2:
 
     def getFailedJobUUIDs(self,rk,days):
 	start = datetime.today()
-<<<<<<< HEAD:jobrun2.py
-        stop = start-timedelta(days)
-=======
         stop = start-timedelta(int(days))
->>>>>>> tasks:jobrun2.py
 	print start
 	print stop
 	rks = []

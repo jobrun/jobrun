@@ -20,13 +20,11 @@ def show_jobs():
     data = jr.getJobDashboardSuccessAll()
     keylist = jr.getJobKeys()
     todayYear = datetime.datetime.now().year
-<<<<<<< HEAD:webapp.py
     return render_template('dashboard.html', data=data,keylist=keylist) 
 
 @app.route('/jobrun2/jobfailures/<dataset>/<action>/<days>')
 def jobfailures(dataset,action,days):
     days = int(days)
-=======
     #for job in jobs:
     #    if data.has_key(job):
     #        data[job][0] = jr.getLast(job)
@@ -41,7 +39,6 @@ def jobfailures(dataset,action,days):
 
 @app.route('/jobrun2/jobfailures/<dataset>/<action>/<days>')
 def jobfailures(dataset,action,days):
->>>>>>> tasks:webapp.py
     job_failure_rk = [dataset,action]
     jobuuids = jr.getFailedJobUUIDs(job_failure_rk,days)
     return render_template('jobfailures.html',jobuuids=jobuuids ,job_failure_rk=job_failure_rk)
