@@ -2,6 +2,16 @@
 <html>
   <head>
     <title>Jobrun Status</title>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert fade in">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          {% for message in messages %}
+            {{ message }}
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
     <meta name="viewport" content="windt=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link rel="stylesheet" media="screen" href="{{ url_for('static', filename='css/bootstrap.css') }}">
@@ -32,6 +42,7 @@
 
     </style>
     <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="{{ url_for('static', filename='js/jquery.validate.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
   </head>
 
