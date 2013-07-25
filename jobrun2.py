@@ -32,9 +32,8 @@ class JobRun2:
     def getToday(self, rk):
         today = datetime.strptime(datetime.today().strftime('%m/%d/%Y 00:00:00'), '%m/%d/%Y %H:%M:%S')
         tomorrow = today + timedelta(1)
-        s = 0
         try:
-            jlookup = self.jl.get(rk, column_start=tomorrow, column_finish=today)
+            jf_count = self.jf.get_count(rk, column_start=tomorrow, column_finish=today)
         except Exception, e:
             return float(-100)
         try:
@@ -100,7 +99,7 @@ class JobRun2:
 	for key in jl_rks:
 	    successRates[key] = {}
 	    successRates[key][0] = self.getLast(key)
-	    successRates[key][1] = self.getToday(key)
+	    successRates[key][1] = self.getSuccess(key,1)
 	    for days in [90,60,30]:
 	    	successRates[key][days] = self.getSuccess(key,(int(days)))
 	return successRates
