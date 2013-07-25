@@ -22,26 +22,18 @@ def show_jobs():
     todayYear = datetime.datetime.now().year
     return render_template('dashboard.html', data=data,keylist=keylist) 
 
-#@app.route('/jobrun2/jobfailures/<dataset>/<action>/<days>')
-#def jobfailures(dataset,action,days):
-    days = int(days)
-    #for job in jobs:
-    #    if data.has_key(job):
-    #        data[job][0] = jr.getLast(job)
-    #        data[job][1] = jr.getToday(job)
-    #    else:
-    #        data[job] = {}
-    #        data[job][0] = jr.getLast(job)
-    #        data[job][1] = jr.getToday(job)
-    #    if not isinstance(data[(job[0], job[1])][1], float):
-    #        data[(job[0], job[1])][1] = 'None'
-#    return render_template('dashboard.html', data=data) 
-
 @app.route('/jobrun2/jobfailures/<dataset>/<action>/<days>')
 def jobfailures(dataset,action,days):
     job_failure_rk = [dataset,action]
     jobuuids = jr.getFailedJobUUIDs(job_failure_rk,days)
     return render_template('jobfailures.html',jobuuids=jobuuids ,job_failure_rk=job_failure_rk)
+
+@app.route('/jobrun2/get_last_run/<dataset>/<action>')
+def get_last_run(dataset,action):
+    job_rk = [dataset,action]
+    jobrs = jr.getLastJobrun(job_rk)
+    jobuuid=0
+    return render_template('jobresults.html',job_uuid=jobuuid,jobrs=jobrs)
 
 @app.route('/jobrun2/jobresults/<job_uuid>')
 def jobresults(job_uuid):

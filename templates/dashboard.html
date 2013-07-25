@@ -24,9 +24,9 @@
     <div class="span1">Unmanaged</div>
 
     {% if data[key][0] != 0 %}
-      <div class="span1 critical">Fail</div>
+      <div class="span1 critical"><a href="{{ url_for('get_last_run', action=key[1], dataset=key[0] ) }}" style="color: rgb(255,0,0)">Fail</a></div>
     {% else %}
-      <div class="span1 ok">Success</div>
+      <div class="span1 ok"><a href="{{ url_for('get_last_run', action=key[1], dataset=key[0] ) }}" style="color: rgb(0,100,0)">Success</a></div>
     {% endif %}
 	
      {% if not data[key][1] %}

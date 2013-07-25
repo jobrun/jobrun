@@ -29,26 +29,6 @@ class JobRun2:
             return float(-100)
         return status
 
-    def getToday(self, rk):
-        today = datetime.strptime(datetime.today().strftime('%m/%d/%Y 00:00:00'), '%m/%d/%Y %H:%M:%S')
-        tomorrow = today + timedelta(1)
-        try:
-            jf_count = self.jf.get_count(rk, column_start=tomorrow, column_finish=today)
-        except Exception, e:
-            return float(-100)
-        try:
-            statuses = self.jr.multiget(jlookup.values(), column_start='status', column_finish='status')
-            for status in statuses.values():
-                if status['status'] == 0:
-                    s += 1
-	        else:
-		    s = 2
-            success_rate = (float(s)/float(len(statuses))) * 100
-        except Exception, e:
-            success_rate = float(99.99)
-            
-        return success_rate
-
     def getJobKeys(self):
 	rks = []
         jobs = self.jl.get_range(column_count=0, filter_empty=False)
@@ -67,6 +47,15 @@ class JobRun2:
 	    jobs = {}
 	    jobs['Error'] = 'No Keys Found'
 	    return jobs
+
+    def getLastJobrun(self,rk):
+	try:
+		jlookup = self.jl.get(rk, column_count=1)
+		job_output = self.jr.get(jlookup.values()[0])
+	except NotFoundException:
+		jobs = {}
+		jobs['Error'] = 'Job Not Found'
+	return job_output
 
     def getFailedJobUUIDs(self,rk,days):
 	start = datetime.today()
