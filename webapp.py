@@ -22,8 +22,8 @@ def show_jobs():
     todayYear = datetime.datetime.now().year
     return render_template('dashboard.html', data=data,keylist=keylist) 
 
-@app.route('/jobrun2/jobfailures/<dataset>/<action>/<days>')
-def jobfailures(dataset,action,days):
+#@app.route('/jobrun2/jobfailures/<dataset>/<action>/<days>')
+#def jobfailures(dataset,action,days):
     days = int(days)
     #for job in jobs:
     #    if data.has_key(job):
@@ -35,7 +35,7 @@ def jobfailures(dataset,action,days):
     #        data[job][1] = jr.getToday(job)
     #    if not isinstance(data[(job[0], job[1])][1], float):
     #        data[(job[0], job[1])][1] = 'None'
-    return render_template('dashboard.html', data=data) 
+#    return render_template('dashboard.html', data=data) 
 
 @app.route('/jobrun2/jobfailures/<dataset>/<action>/<days>')
 def jobfailures(dataset,action,days):
