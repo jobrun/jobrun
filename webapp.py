@@ -80,5 +80,17 @@ def edit_task(dataset, action):
 def add_task():
     return render_template('add_task.html')
 
+@app.route('/jobrun2/worker/add')
+def add_worker():
+    return render_template('add_worker.html')
+
+@app.route('/jobrun2/worker/edit/<worker_id>')
+def edit_worker(worker_id):
+    return redirect(url_for('show_jobs'))
+
+@app.route('/jobrun2/worker/delete/<worker_id>')
+def delete_worker():
+    return redirect(url_for('show_jobs'))
+
 if __name__ == '__main__':
     app.run(debug=True)

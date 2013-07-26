@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<form id="workerForm" name="workerForm" action="" method="get">
+  <fieldset>
+    <label>Hostname</label>
+    <input type="text" id="hostname" name="hostname" required>
+    <label>IP Address</label>
+    <input type="text" id="ipaddr" name="ipaddr" required>
+  </fieldset>
+  <input type="submit" value="Submit">
+</form>
+
+{% endblock %}

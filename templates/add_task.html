@@ -8,7 +8,7 @@ $(document).ready(function(){
     $('#action').keyup(function(){
         $('#lockfile').val($('#dataset').val()+'_'+this.value.replace(/ /g,'_')+'.lck');
     });
-    $("#taskForm").validate();
+    //$("#taskForm").validate();
     /*    rules: {
             dataset: {
                 required: true,
@@ -29,17 +29,17 @@ $(document).ready(function(){
                 minlength: "Action must be at least 5 characters long"
             }
         }
-    });
-});*/
+    });*/
+});
 
 </script>
 <form id="taskForm" name="taskForm" action="" method="get">
   <fieldset>
-    <legend></legend>
+    <legend>Required</legend>
     <label>Dataset</label>
-    <input type="text" id="dataset" name="dataset" minlength=3 required />
+    <input type="text" id="dataset" name="dataset" required>
     <label>Action</label>
-    <input type="text" id="action" name="action">
+    <input type="text" id="action" name="action" required>
     <label>Target</label>
     <input type="text" id="target">
     <label>Script</label>

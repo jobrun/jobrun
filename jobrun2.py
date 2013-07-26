@@ -6,13 +6,16 @@ from datetime import datetime, timedelta
 from uuid import uuid4
 from string import *
 from operator import itemgetter, attrgetter
+from ConfigParser import ConfigParser
 
+config = ConfigParser()
+options = {}
+config.read('jobrun.conf')
+options['hosts'] = config.get('CASSANDRA', 'HOSTS').split(',')
 class JobRun2:
     def __init__(self):
 	err = ''
-        self.pool = ConnectionPool('jobrun', server_list=['tamp20-seot-cas1.bhn.net:9160',
-                                             'tamp20-seot-cas2.bhn.net:9160',
-                                             'tamp20-seot-cas3.bhn.net:9160',])
+        self.pool = ConnectionPool('jobrun', server_list=options['hosts'])
         self.jl = ColumnFamily(self.pool, 'job_lookup')
         self.jr = ColumnFamily(self.pool, 'job_results')
         self.jd = ColumnFamily(self.pool, 'job_dashboard')

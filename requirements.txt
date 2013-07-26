@@ -2,6 +2,7 @@ Flask==0.10.1
 Jinja2==2.7
 MarkupSafe==0.18
 Werkzeug==0.9.1
+configparser==3.3.0r2
 cx-Oracle==5.1.2
 gunicorn==17.5
 itsdangerous==0.21
