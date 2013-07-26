@@ -55,13 +55,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="/">Jobrun Dashboard</a>
+          <a class="brand" href="/jobrun2">Jobrun Dashboard</a>
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right" >
               Logged in as <a href="#" class="navbar-link">Username</a>
             </p>
             <ul class="nav">
               <li><a href="/jobrun2">Home</a></li>
+              <li><a href="{{ url_for('list_workers') }}">Workers</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>

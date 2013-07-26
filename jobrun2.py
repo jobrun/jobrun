@@ -20,9 +20,30 @@ class JobRun2:
         self.jr = ColumnFamily(self.pool, 'job_results')
         self.jd = ColumnFamily(self.pool, 'job_dashboard')
         self.jf = ColumnFamily(self.pool, 'job_failures')
+        self.jw = ColumnFamily(self.pool, 'job_workers')
+        self.jt = ColumnFamily(self.pool, 'job_tasks')
+        self.jwl = ColumnFamily(self.pool, 'job_worker_lookup')
 
     def closePool(self):
         pass	
+
+    def addWorker(self, hostname, ipaddr):
+        worker_id = uuid4()
+        self.jw.insert(worker_id, {'hostname': hostname, 'ip_addr': ipaddr})
+
+    def removeWorker(self, workerid):
+        self.jw.remove(workerid)
+
+    def getWorkerNames(self):
+        results = []
+        workers = self.jw.get_range()
+        for worker in workers:
+            results.append(worker[1]['hostname'])
+        return results
+
+    def getWorkers(self):
+        workers = self.jw.get_range()
+        return workers
 
     def getLast(self,rk):
         try:

@@ -8,48 +8,39 @@ $(document).ready(function(){
     $('#action').keyup(function(){
         $('#lockfile').val($('#dataset').val()+'_'+this.value.replace(/ /g,'_')+'.lck');
     });
-    //$("#taskForm").validate();
-    /*    rules: {
-            dataset: {
-                required: true,
-                minlength: 3
-            },
-            action: {
-                required: true,
-                minlength: 5
-            },
-        },
-        messages: {
-            dataset: {
-                required: "Please specify a dataset",
-                minlength: "Dataset must be at least 3 characters long"
-            },
-            action: {
-                required: "Please specify an action",
-                minlength: "Action must be at least 5 characters long"
-            }
-        }
-    });*/
 });
-
 </script>
-<form id="taskForm" name="taskForm" action="" method="get">
-  <fieldset>
-    <legend>Required</legend>
-    <label>Dataset</label>
-    <input type="text" id="dataset" name="dataset" required>
-    <label>Action</label>
-    <input type="text" id="action" name="action" required>
-    <label>Target</label>
-    <input type="text" id="target">
-    <label>Script</label>
-    <input type="text" id="script">
-    <label>Script arguments</label>
-    <input type="text" id="arguments">
-    <label>Lock file</label>
-    <input type="text" id="lockfile" name="lockfile">
-  </fieldset>
-  <input type="submit" value="Submit">
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span6">
+      <h2>Required</h2>
+      <form id="taskForm" name="taskForm" action="" method="get">
+        <fieldset>
+          <label>Dataset</label>
+          <input type="text" id="dataset" name="dataset" required>
+          <label>Action</label>
+          <input type="text" id="action" name="action" required>
+          <label>Target</label>
+          <input type="text" id="target">
+          <label>Script</label>
+          <input type="text" id="script">
+          <label>Lock file</label>
+          <input type="text" id="lockfile" name="lockfile" readonly>
+          <p>Workers</p>
+          {% for worker in workers %}
+            <label class="checkbox">
+              <input type="checkbox" name="worker" value="{{worker}}">{{worker}}
+            </label>
+          {% endfor %}
+    </div>
+    <div class="span6">
+          <h2>Optional</h2>
+          <label>Script arguments</label>
+          <input type="text" id="arguments">
+    </div>
+        </fieldset>
+  </div>
+    <input type="submit" value="Submit">
 </form>
 
 {% endblock %}

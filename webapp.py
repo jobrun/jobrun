@@ -78,11 +78,23 @@ def edit_task(dataset, action):
 
 @app.route('/jobrun2/task/add')
 def add_task():
-    return render_template('add_task.html')
+    workers = jr.getWorkerNames()
+    return render_template('add_task.html', workers=workers)
 
-@app.route('/jobrun2/worker/add')
+@app.route('/jobrun2/worker')
+def list_workers():
+    workers = jr.getWorkerNames()
+    return render_template('list_workers.html', workers=workers)
+
+@app.route('/jobrun2/worker/add', methods=['GET','POST'])
 def add_worker():
-    return render_template('add_worker.html')
+    if request.method == 'GET':
+        return render_template('add_worker.html')
+    else:
+        hostname = request.form['hostname']
+        ipaddr = request.form['ipaddr']
+        jr.addWorker(hostname, ipaddr)
+        return redirect(url_for('list_workers'))
 
 @app.route('/jobrun2/worker/edit/<worker_id>')
 def edit_worker(worker_id):
