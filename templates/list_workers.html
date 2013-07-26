@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<p><b>Workers</b><a href="{{ url_for('add_worker') }}">&plus;</a></p>
+{% for worker in workers %}
+ <p>{{ worker }}</p>
+{% endfor %}
+
+{% endblock %}
