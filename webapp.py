@@ -41,12 +41,12 @@ def jobresults(job_uuid):
     jobrs = jr.getJobRs(job_uuid)
     return render_template('jobresults.html', jobrs=jobrs,job_uuid=job_uuid )
 
-@app.route('/jobrun2/record_job', methods=['POST'])
+@app.route('/jobrun2/api/record_job', methods=['POST'])
 def record_job():
     jobresults = {}
     started = datetime.datetime.strptime(request.form['started'], '%m/%d/%Y %H:%M:%S.%f')
-    jobresults['dataset'] = request.form['dataset']
-    jobresults['action'] = request.form['action']
+    dataset = request.form['dataset']
+    action = request.form['action']
     jobresults['status'] = int(request.form['status'])
     jobresults['output'] = request.form['output']
     if request.form['command']:
@@ -57,10 +57,8 @@ def record_job():
         jobresults['program'] = request.form['program']
     if request.form['machine']:
         jobresults['machine'] = request.form['machine']
-
-    rk = (jobresults['dataset'], jobresults['action'])
-    jr.insertJobResults(rk, jobresults)
-    return('OK')
+    resultDict = jr.insertJobRs(dataset, action, jobresults)
+    return resultDict
 
 @app.route('/jobrun2/task/enable/<dataset>/<action>')
 def enable_task(dataset, action):
