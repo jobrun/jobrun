@@ -117,11 +117,11 @@ class JobRun2:
 	statusSum = 0.0
 	numjobs = 0
 	try:
-		jl_total = self.jl.get_count(rk, column_start=start, column_finish=stop)
-    		jl_failure = self.jf.get_count(rk,column_start=start, column_finish=stop)
-		failRate = (float(jl_failure) / float(jl_total)) * 100
+            jl_total = self.jl.get_count(rk, column_start=start, column_finish=stop)
+            jl_failure = self.jf.get_count(rk,column_start=start, column_finish=stop)
+            failRate = (float(jl_failure) / float(jl_total)) * 100
 	except:
-		failRate = 100
+            failRate = 100
 	return (100 - failRate) 
 
     def insertJobRs(self,dataset,action,jobDict):
@@ -129,16 +129,25 @@ class JobRun2:
         year = int(jobDict['started'].year)
 	jl_rk = [dataset,action]
         job_results = {}
+        resultDict = {}
+        resultDict['job_uuid'] = job_uuid
         if jobDict.has_key('status'): job_results['status'] = jobDict['status']
         if jobDict.has_key('output'): job_results['output'] = jobDict['output']
         if jobDict.has_key('command'): job_results['command'] = jobDict['command']
         if jobDict.has_key('username'): job_results['username'] = jobDict['username']
         if jobDict.has_key('program'): job_results['program'] = jobDict['program']
         if jobDict.has_key('machine'): job_results['machine'] = jobDict['machine']
-	self.jl.insert(jl_rk,{jobDict['started']:job_uuid})
-	self.jr.insert(job_uuid,job_results,ttl=7776000)
-	if jobDict['status'] != 0:
+        try:
+	    self.jl.insert(jl_rk,{jobDict['started']:job_uuid})
+	    self.jr.insert(job_uuid,job_results,ttl=7776000)
+	    if jobDict['status'] != 0:
 		self.insertJobRsFailure(dataset,action,jobDict['started'],uuid)
+            resultDict['status'] = 0
+            resultDict['exception'] = ''
+        except Exception as e:
+            resultDict['status'] = 1
+            resultDict['exception'] = e
+        return resultDict
 
     def insertJobRsFailure(self,dataset,action,dt,uuid):
 	rk = [dataset,action]
