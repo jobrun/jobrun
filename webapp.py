@@ -6,6 +6,7 @@ import uuid
 from pycassa.pool import ConnectionPool
 from pycassa.columnfamily import ColumnFamily
 import datetime
+import urllib
 
 app = Flask(__name__)
 app.secret_key = 'some_secret'
@@ -44,21 +45,22 @@ def jobresults(job_uuid):
 @app.route('/jobrun2/api/record_job', methods=['POST'])
 def record_job():
     jobresults = {}
-    started = datetime.datetime.strptime(request.form['started'], '%m/%d/%Y %H:%M:%S.%f')
     dataset = request.form['dataset']
     action = request.form['action']
+    jobresults['started'] = datetime.datetime.strptime(request.form['started'], '%m/%d/%Y %H:%M:%S.%f')
     jobresults['status'] = int(request.form['status'])
     jobresults['output'] = request.form['output']
-    if request.form['command']:
+    if 'command' in request.form:
         jobresults['command'] = request.form['command']
-    if request.form['username']:
+    if 'username' in request.form:
         jobresults['username'] = request.form['username']
-    if request.form['program']:
+    if 'program' in request.form:
         jobresults['program'] = request.form['program']
-    if request.form['machine']:
+    if 'machine' in request.form:
         jobresults['machine'] = request.form['machine']
     resultDict = jr.insertJobRs(dataset, action, jobresults)
-    return resultDict
+    print resultDict
+    return urllib.urlencode(resultDict)
 
 @app.route('/jobrun2/task/enable/<dataset>/<action>')
 def enable_task(dataset, action):
