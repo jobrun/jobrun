@@ -141,7 +141,7 @@ class JobRun2:
 	    self.jl.insert(jl_rk,{jobDict['started']:job_uuid})
 	    self.jr.insert(job_uuid,job_results,ttl=7776000)
 	    if jobDict['status'] != 0:
-		self.insertJobRsFailure(dataset,action,jobDict['started'],uuid)
+		self.insertJobRsFailure(dataset,action,jobDict['started'],job_uuid)
             resultDict['status'] = 0
             resultDict['exception'] = ''
         except Exception as e:
@@ -151,7 +151,7 @@ class JobRun2:
 
     def insertJobRsFailure(self,dataset,action,dt,uuid):
 	rk = [dataset,action]
-	self.jf.insert(rk,{started:uuid},ttl=7776000)
+	self.jf.insert(rk,{dt:uuid},ttl=7776000)
 
     def insertJobDashboardSuccess(self,rk,days,successRate):
 	self.jd.insert(rk,{int(days):float(successRate)})
