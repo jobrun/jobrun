@@ -6,7 +6,7 @@
     <div class="span2"><b>Status</b></div>
     <div class="span4"><b>Output</b></div>
   </div>
-  {% for d in results.keys() %}
+  {% for d in results.keys()|sort(reverse=True) %}
   <div class="row-fluid">
     <div class="span2">{{ d }}</div>
     {% if results[d]['status'] == 0 %}
