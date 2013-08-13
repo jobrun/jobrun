@@ -75,6 +75,21 @@ class JobRun2:
 	    jobs['Error'] = 'No Failed Jobs Found For Time Period'
 	    return jobs
 
+    def getJobUUIDs(self,rk,days):
+	start = datetime.today()
+        stop = start-timedelta(int(days))
+	print start
+	print stop
+	rks = []
+	try:
+		ct = self.jl.get_count(rk,column_start=start,column_finish=stop)
+		jobs = self.jl.get(rk,column_start=start,column_finish=stop,column_count=ct)
+		return jobs
+	except NotFoundException,e:
+	    jobs = {}
+	    jobs['Error'] = 'No Jobs Found For Time Period'
+	    return jobs
+
     def getJobDashboardKeys(self):
 	self.rks = []
 	try:

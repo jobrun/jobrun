@@ -20,7 +20,7 @@
       <a href="{{ url_for('disable_task', dataset=key[0], action=key[1]) }}"><i class="icon-pause"></i></a>
       <a href="{{ url_for('edit_task', dataset=key[0], action=key[1]) }}#"><i class="icon-pencil"></i></a>
     </div>
-    <div class="span5"><a href="{{ url_for('jobfailures', action=key[1], dataset=key[0],days=91 ) }}">{{ key[0] }} - {{ key[1] }}</a></div>
+    <div class="span5"><a href="{{ url_for('jobdetails', action=key[1], dataset=key[0],days=91 ) }}">{{ key[0] }} - {{ key[1] }}</a></div>
     <div class="span1">Unmanaged</div>
 
     {% if data[key][0] != 0 %}

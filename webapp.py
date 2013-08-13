@@ -29,6 +29,23 @@ def jobfailures(dataset,action,days):
     jobuuids = jr.getFailedJobUUIDs(job_failure_rk,days)
     return render_template('jobfailures.html',jobuuids=jobuuids ,job_failure_rk=job_failure_rk)
 
+@app.route('/jobrun2/jobdetails/<dataset>/<action>/<days>')
+def jobdetails(dataset,action,days):
+    job_rk = [dataset,action]
+    results = {}
+    jobdu = jr.getJobUUIDs(job_rk,days)
+    for d in jobdu:
+        dt = d.strftime('%m/%d/%Y %H:%M:%S')
+        results[dt] = {}
+        results[dt]['uuid'] = jobdu[d]
+        r = jr.getJobRs(jobdu[d])
+        for key in r:
+            if key == 'output' and len(r[key]) > 40:
+                results[dt][key] = r[key][0:39] + '...'
+            else:
+                results[dt][key] = r[key]
+    return render_template('jobdetails.html',results=results,job_rk=job_rk)
+
 @app.route('/jobrun2/get_last_run/<dataset>/<action>')
 def get_last_run(dataset,action):
     job_rk = [dataset,action]

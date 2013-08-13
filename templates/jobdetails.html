@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block body %}
+ <h3>{{ job_rk[0] }} - {{ job_rk[1] }}</h3>
+  <div class="row-fluid">
+    <div class="span2"><b>Date</b></div>
+    <div class="span2"><b>Status</b></div>
+    <div class="span4"><b>Output</b></div>
+  </div>
+  {% for d in results.keys() %}
+  <div class="row-fluid">
+    <div class="span2">{{ d }}</div>
+    {% if results[d]['status'] == 0 %}
+      <div class="span2">Success</div>
+    {% else %}
+      <div class="span2">Failure</div>
+    {% endif %}
+    <div class="span4"><a href="{{ url_for('jobresults' , job_uuid=results[d]['uuid']) }}">{{ results[d]['output'] }}</a></div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
