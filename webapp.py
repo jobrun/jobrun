@@ -1,32 +1,58 @@
 #!/usr/bin/env python
 
-from flask import Flask, request, render_template, redirect, url_for, flash
-from uuid import *
+import datetime
 import uuid
+from uuid import *
+from j_ldap import *
 from pycassa.pool import ConnectionPool
 from pycassa.columnfamily import ColumnFamily
-import datetime
+from jobrun2 import JobRun2
+from flask import Flask, request, render_template, redirect, url_for, flash
+from flask.ext.login import LoginManager
 
 app = Flask(__name__)
-app.secret_key = 'some_secret'
-
-from jobrun2 import JobRun2
-
+app.config.from_object('config')
+from forms import LoginForm
+login_manager = LoginManager()
 jr = JobRun2()
 
+app.debug = True
+j_ldap = j_ldap(app)
+
 # Home status page
+@app.route('/')
 @app.route('/jobrun2')
+@login_required
 def show_jobs():
     data = jr.getJobDashboardSuccessAll()
     keylist = jr.getJobKeys()
     todayYear = datetime.datetime.now().year
-    return render_template('dashboard.html', data=data,keylist=keylist) 
+    return render_template('dashboard.html', data=data,keylist=keylist ) 
+
+@app.route('/login', methods = ['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+	j_ldap.ldap_login(form.username.data,form.password.data)
+        flash('Login requested for User="' + form.username.data + '", remember_me=' + str(form.remember_me.data))
+    return render_template('login.html', 
+        title = 'Sign In',
+        form = form )
+
+@app.route('/logout', methods = ['GET', 'POST'])
+def logout():
+    session['username'] = None
+    if session['username'] == None:
+	flash('I logged you out sucka')
+	form = LoginForm()
+        return redirect(url_for('login')) 
+        
 
 @app.route('/jobrun2/jobfailures/<dataset>/<action>/<days>')
 def jobfailures(dataset,action,days):
     job_failure_rk = [dataset,action]
     jobuuids = jr.getFailedJobUUIDs(job_failure_rk,days)
-    return render_template('jobfailures.html',jobuuids=jobuuids ,job_failure_rk=job_failure_rk)
+    return render_template('jobfailures.html',jobuuids=jobuuids ,job_failure_rk=job_failure_rk )
 
 @app.route('/jobrun2/get_last_run/<dataset>/<action>')
 def get_last_run(dataset,action):
