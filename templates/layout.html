@@ -58,7 +58,11 @@
           <a class="brand" href="/">Jobrun Dashboard</a>
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right" >
-              Logged in as <a href="#" class="navbar-link">Username</a>
+		{% if session['username'] %}
+              		Logged in as <a href="/logout" class="navbar-link">{{ session['username'] }}</a>
+		{% else %}
+              		Logged in as <a href="/login" class="navbar-link">None</a>
+		{% endif %}
             </p>
             <ul class="nav">
               <li><a href="/jobrun2">Home</a></li>

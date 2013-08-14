@@ -75,6 +75,21 @@ class JobRun2:
 	    jobs['Error'] = 'No Failed Jobs Found For Time Period'
 	    return jobs
 
+    def getJobUUIDs(self,rk,days):
+	start = datetime.today()
+        stop = start-timedelta(int(days))
+	print start
+	print stop
+	rks = []
+	try:
+		ct = self.jl.get_count(rk,column_start=start,column_finish=stop)
+		jobs = self.jl.get(rk,column_start=start,column_finish=stop,column_count=ct)
+		return jobs
+	except NotFoundException,e:
+	    jobs = {}
+	    jobs['Error'] = 'No Jobs Found For Time Period'
+	    return jobs
+
     def getJobDashboardKeys(self):
 	self.rks = []
 	try:
@@ -117,11 +132,11 @@ class JobRun2:
 	statusSum = 0.0
 	numjobs = 0
 	try:
-		jl_total = self.jl.get_count(rk, column_start=start, column_finish=stop)
-    		jl_failure = self.jf.get_count(rk,column_start=start, column_finish=stop)
-		failRate = (float(jl_failure) / float(jl_total)) * 100
+            jl_total = self.jl.get_count(rk, column_start=start, column_finish=stop)
+            jl_failure = self.jf.get_count(rk,column_start=start, column_finish=stop)
+            failRate = (float(jl_failure) / float(jl_total)) * 100
 	except:
-		failRate = 100
+            failRate = 100
 	return (100 - failRate) 
 
     def insertJobRs(self,dataset,action,jobDict):
@@ -129,20 +144,29 @@ class JobRun2:
         year = int(jobDict['started'].year)
 	jl_rk = [dataset,action]
         job_results = {}
+        resultDict = {}
+        resultDict['job_uuid'] = job_uuid
         if jobDict.has_key('status'): job_results['status'] = jobDict['status']
         if jobDict.has_key('output'): job_results['output'] = jobDict['output']
         if jobDict.has_key('command'): job_results['command'] = jobDict['command']
         if jobDict.has_key('username'): job_results['username'] = jobDict['username']
         if jobDict.has_key('program'): job_results['program'] = jobDict['program']
         if jobDict.has_key('machine'): job_results['machine'] = jobDict['machine']
-	self.jl.insert(jl_rk,{jobDict['started']:job_uuid})
-	self.jr.insert(job_uuid,job_results,ttl=7776000)
-	if jobDict['status'] != 0:
-		self.insertJobRsFailure(dataset,action,jobDict['started'],uuid)
+        try:
+	    self.jl.insert(jl_rk,{jobDict['started']:job_uuid})
+	    self.jr.insert(job_uuid,job_results,ttl=7776000)
+	    if jobDict['status'] != 0:
+		self.insertJobRsFailure(dataset,action,jobDict['started'],job_uuid)
+            resultDict['status'] = 0
+            resultDict['exception'] = ''
+        except Exception as e:
+            resultDict['status'] = 1
+            resultDict['exception'] = e
+        return resultDict
 
     def insertJobRsFailure(self,dataset,action,dt,uuid):
 	rk = [dataset,action]
-	self.jf.insert(rk,{started:uuid},ttl=7776000)
+	self.jf.insert(rk,{dt:uuid},ttl=7776000)
 
     def insertJobDashboardSuccess(self,rk,days,successRate):
 	self.jd.insert(rk,{int(days):float(successRate)})
