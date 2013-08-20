@@ -36,7 +36,6 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
 	j_ldap.ldap_login(form.username.data,form.password.data)
-        flash('Login requested for User="' + form.username.data + '", remember_me=' + str(form.remember_me.data))
     return render_template('login.html', 
         title = 'Sign In',
         form = form )
@@ -45,7 +44,7 @@ def login():
 def logout():
     session['username'] = None
     if session['username'] == None:
-	flash('I logged you out sucka')
+	flash('Logout Successful')
 	form = LoginForm()
         return redirect(url_for('login')) 
         
