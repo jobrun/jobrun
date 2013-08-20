@@ -26,10 +26,14 @@ j_ldap = j_ldap(app)
 @app.route('/jobrun2')
 @login_required
 def show_jobs():
+    return render_template('dashboard.html')
+
+@app.route('/jobrun2/dash_results')
+def dash_results():
     data = jr.getJobDashboardSuccessAll()
     keylist = jr.getJobKeys()
     todayYear = datetime.datetime.now().year
-    return render_template('dashboard.html', data=data,keylist=keylist ) 
+    return render_template('dash_results.html', data=data,keylist=keylist)
 
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
@@ -48,7 +52,6 @@ def logout():
 	form = LoginForm()
         return redirect(url_for('login')) 
         
-
 @app.route('/jobrun2/jobfailures/<dataset>/<action>/<days>')
 def jobfailures(dataset,action,days):
     job_failure_rk = [dataset,action]
