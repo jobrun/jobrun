@@ -1,0 +1,38 @@
+  {% for key,value in data|dictsort(false) %}
+  <div class="row-fluid">
+    <div class="span1">
+      <a href="{{ url_for('enable_task', dataset=key[0], action=key[1]) }}"><i class="icon-play"></i></a>
+      <a href="{{ url_for('disable_task', dataset=key[0], action=key[1]) }}"><i class="icon-pause"></i></a>
+      <a href="{{ url_for('edit_task', dataset=key[0], action=key[1]) }}#"><i class="icon-pencil"></i></a>
+    </div>
+    <div class="span5"><a href="{{ url_for('jobdetails', action=key[1], dataset=key[0],days=91 ) }}">{{ key[0] }} - {{ key[1] }}</a></div>
+    <div class="span1">Unmanaged</div>
+
+    {% if data[key][0] != 0 %}
+      <div class="span1 critical"><a href="{{ url_for('get_last_run', action=key[1], dataset=key[0] ) }}" style="color: rgb(255,0,0)">Fail</a></div>
+    {% else %}
+      <div class="span1 ok"><a href="{{ url_for('get_last_run', action=key[1], dataset=key[0] ) }}" style="color: rgb(0,100,0)">Success</a></div>
+    {% endif %}
+	
+     {% if not data[key][1] %}
+	<div class="span1 unknown">None</div>
+     {% else %}
+    	{%  if data[key][1] < 90 %}
+	<div class="span1" critical"><a href="{{ url_for('jobfailures', action=key[1], dataset=key[0],days=91 ) }}">{{'%0.2f'| format(data[key][1]|float) }}</a></div>
+    	{% else %}
+    	<div class="span1 ok">{{'%0.2f'| format(data[key][1]|float) }}%</div>
+    	{% endif %}
+    {% endif %}
+    {% for days in [30, 60, 90] %}
+      {% if not data[key][days] %}
+	  <div class="span1 unknown">None</div>
+      {% else %}
+    	{% if data[key][days] < 80 %}
+	   <div class="span1" critical"><a href="{{ url_for('jobfailures', action=key[1], dataset=key[0],days=days ) }}" style="color: rgb(255,0,0)">{{'%0.2f'| format(data[key][days]|float) }}</a></div>
+        {% else %}
+	   <div class="span1" ok"><a href="{{ url_for('jobfailures', action=key[1], dataset=key[0], days=days ) }}" style="color: rgb(0,100,0)">{{'%0.2f'| format(data[key][days]|float) }}</a></div>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% endfor %}
