@@ -7,31 +7,27 @@ import ldap,ldif,sys
 
 class j_ldap:
 
-        ldapGroupBase = "ou=Groups,o=bhntampa"
-
 	def __init__(self,app):
 		ld = self.ldap_connect(app)
 		ldap_host = app.config['LDAP_HOST']
+		ldap_cert = app.config['LDAP_CERT']
 		basedn = app.config['LDAP_SEARCH_BASE']
 
 	def ldap_connect(self,app):
-		ldap.set_option(ldap.OPT_X_TLS_CACERTFILE,'/etc/bhncert')
+		ldap.set_option(ldap.OPT_X_TLS_CACERTFILE,app.config['LDAP_CERT'])
 		ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
-		self.ld = ldap.initialize('ldaps://localhost:6333')
+		self.ld = ldap.initialize(app.config['LDAP_HOST'])
 
 	def ldap_search_dn(self,username):
 		filter = "uid="+username
 		basedn = 'ou=People,o=bhntampa'
-		r = self.ld.search_s(basedn,ldap.SCOPE_SUBTREE,filter)
-		print r
-		return r 
-# example cn=ken,ou=SupportServices,ou=SystemsOperations,ou=TIS,ou=People,o=bhntampa
+		results = self.ld.search_s(basedn,ldap.SCOPE_SUBTREE,filter)
+		# example cn=ken,ou=SupportServices,ou=SystemsOperations,ou=TIS,ou=People,o=bhntampa
+		return results 
 
 	def simple_bind(self,dn,pwd):
 		try:
 			self.ld.simple_bind_s(dn,pwd)
-			#self.ld.unbind_s()
-			print session
 			return 1
 		except Exception,e:
 			return e
