@@ -3,7 +3,7 @@
 import datetime
 import uuid
 from uuid import *
-from j_ldap import *
+from app.j_ldap import *
 from pycassa.pool import ConnectionPool
 from pycassa.columnfamily import ColumnFamily
 from jobrun2 import JobRun2
@@ -14,7 +14,7 @@ import urllib
 
 app = Flask(__name__)
 app.config.from_object('config')
-from forms import LoginForm
+from app.forms import LoginForm
 login_manager = LoginManager()
 jr = JobRun2()
 
