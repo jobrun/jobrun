@@ -1,5 +1,6 @@
-from flask.ext.wtf import Form, TextField, BooleanField
-from flask.ext.wtf import Required
+from flask.ext.wtf import Form
+from wtforms import TextField,BooleanField
+from wtforms.validators import Required
 from flask import current_app, redirect,url_for, session, request, flash, render_template
 from functools import wraps
 import ldap,ldif,sys
@@ -49,8 +50,9 @@ class j_ldap:
 def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-	if session['username'] != None:
-            return f(*args, **kwargs)
+        if session.has_key('username'):
+	    if session['username'] != None:
+                return f(*args, **kwargs)
         return redirect(url_for('login'))
 
     return decorated
