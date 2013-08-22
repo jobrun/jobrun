@@ -3,3 +3,4 @@
 *.pyc
 *.pynb
 config.py
+jobrun.conf
